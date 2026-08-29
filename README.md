@@ -1,8 +1,8 @@
 # 智能体重健康分析助手 / Smart Health Analyzer
 
-这是一个轻量级、纯前端、无依赖的单页网页应用。用户只需输入性别、身高、体重、体脂率，即可快速评估当前的体脂重量、标准体重区间，并计算出距离目标体重需要增减的重量以及按计划达标所需的时间。
+这是一个轻量级、纯前端、无依赖的单页网页应用。用户只需输入性别、身高、体重、体脂率、肌肉量，即可快速评估当前的体脂重量、标准体重区间、肌肉率，并计算出距离目标体重需要增减的重量以及按计划达标所需的时间。
 
-This is a lightweight, pure front-end, dependency-free single-page web application. Users only need to input gender, height, weight, and body fat percentage to quickly evaluate their current fat mass, ideal weight range, and calculate the exact weight to lose/gain, along with the estimated time to reach their goal.
+This is a lightweight, pure front-end, dependency-free single-page web application. Users only need to input gender, height, weight, body fat percentage, and muscle mass to quickly evaluate their current fat mass, ideal weight range, muscle ratio, and calculate the exact weight to lose/gain, along with the estimated time to reach their goal.
 
 ---
 
@@ -13,6 +13,9 @@ This is a lightweight, pure front-end, dependency-free single-page web applicati
 
 - **体脂重量计算**：根据输入的体重和体脂率（%），精准计算当前的脂肪重量（kg）。
   *Fat Mass Calculation*: Accurately calculates current fat mass (kg) based on input weight and body fat percentage (%).
+
+- **肌肉率计算**：新增肌肉量（kg）输入，自动计算肌肉量占总体重的百分比（%），更全面地评估身体成分。
+  *Muscle Ratio Calculation*: Added muscle mass (kg) input to automatically calculate the percentage of muscle mass in total body weight (%), providing a more comprehensive body composition assessment.
 
 - **智能差值估算**：自动对比当前体重与标准区间，清晰显示你需要**增加**或**减少**多少公斤；若已达标则明确显示无需调整。
   *Smart Weight Gap Estimation*: Automatically compares current weight against the standard range, clearly showing how many kg to *gain* or *lose*; if already within range, it clearly states no changes are needed.
@@ -60,12 +63,14 @@ This is a lightweight, pure front-end, dependency-free single-page web applicati
 - 身高 / Height (cm) - 仅支持 140 - 190 的整数 / Integers only from 140 to 190
 - 当前体重 / Current Weight (kg)
 - 体脂率 / Body Fat (%)
+- *肌肉量 / Muscle Mass (kg)* - 需小于总重量 / Must be less than total weight
 
 *输出项 / Outputs:*
 - *体脂重量 / Fat Mass* (Current fat mass in kg)
 - *标准体重区间 / Ideal Weight Range* (Healthy range based on height, e.g., 55.0 kg - 58.9 kg)
 - *需要增加/减少的体重 / Weight to Gain/Lose* (Displayed in large font, automatically colored red, blue, or green)
 - *达标所需时间 / Time to Reach Goal* (Estimated months and weeks)
+- *肌肉率 / Muscle Ratio* (Percentage of muscle mass in total body weight)
 
 ---
 
@@ -77,6 +82,7 @@ The results area uses modular card designs for quick access to information:
 - *标准体重区间 / Ideal Weight Range*: 橙色系卡片（全宽，一行显示）/ Orange-themed card (Full width, single line)
 - *需要增减量 / Weight to Change*: 红色（需减）/ 蓝色（需增）/ 绿色（已达标）/ Red (Need to lose) / Blue (Need to gain) / Green (Within range)
 - *达标时间 / Time to Goal*: 与增减量主色调同步，采用白底同色字，形成视觉配对。 / Synchronizes with the main color of the weight change card, using white background with same-colored text for visual pairing.
+- *肌肉率 / Muscle Ratio*: 青色系卡片（全宽，放在需要增减量下方）/ Cyan-themed card (Full width, placed below the weight change cards)
 
 ---
 
