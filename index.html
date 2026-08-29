@@ -2,11 +2,9 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <!-- 核心兼容属性：让键盘占用空间，视口缩小 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
     <title>智能体重健康分析助手</title>
     <style>
-        /* 浅色模式变量（默认） */
         :root {
             --bg-color: #f0f2f5;
             --card-bg: #ffffff;
@@ -24,9 +22,11 @@
             --blue-bg: #bbdefb; --blue-border: #42a5f5; --blue-text: #0d47a1;
             --green-bg: #c8e6c9; --green-border: #66bb6a; --green-text: #1b5e20;
             --white-bg: #ffffff; --white-border: #dddddd;
+            
+            /* 新增：肌肉率配色（青色） */
+            --muscle-bg: #e0f7fa; --muscle-border: #4dd0e1; --muscle-text: #006064;
         }
 
-        /* 手机深色模式变量 */
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg-color: #121212;
@@ -45,26 +45,27 @@
                 --blue-bg: #0d2b45; --blue-border: #1e88e5; --blue-text: #80d8ff;
                 --green-bg: #1b3a20; --green-border: #43a047; --green-text: #a5d6a7;
                 --white-bg: #2c2c2c; --white-border: #666666;
+                
+                /* 新增：肌肉率深色模式配色 */
+                --muscle-bg: #00363a; --muscle-border: #26c6da; --muscle-text: #80deea;
             }
         }
 
-        /* 核心改动：取消垂直居中，改为顶部对齐+底部留白 */
         body { 
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
             background-color: var(--bg-color); 
             display: flex; 
             justify-content: center; 
-            align-items: flex-start; /* 顶部对齐，不会乱弹 */
+            align-items: flex-start; 
             min-height: 100vh; 
             margin: 0; 
             padding: 0; 
             overflow-y: auto; 
         }
         
-        /* 容器：顶部开始，底部预留大量空间防止键盘挡住 */
         .container { 
             background: var(--card-bg); 
-            padding: 20px 30px 80px 30px; /* 底部预留 80px */
+            padding: 20px 30px 80px 30px; 
             border-radius: 16px; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
             width: 100%; 
@@ -74,28 +75,28 @@
             transition: all 0.3s; 
         }
         
+        /* 上半部分：字体加大优化 */
         .header { text-align: center; margin-bottom: 20px; }
-        h2 { color: var(--text-main); margin: 0 0 5px 0; font-size: 24px; font-weight: 700; }
-        .subtitle { font-size: 13px; color: var(--text-sub); margin: 0; }
+        h2 { color: var(--text-main); margin: 0 0 5px 0; font-size: 28px; font-weight: 800; }
+        .subtitle { font-size: 15px; color: var(--text-sub); margin: 0; }
 
-        .lang-switch { text-align: center; margin-bottom: 20px; background: var(--input-bg); padding: 4px; border-radius: 8px; display: inline-flex; width: 100%; justify-content: center; }
-        .lang-btn { flex: 1; padding: 8px; border: none; background: transparent; color: var(--text-sub); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 14px; }
+        .lang-switch { text-align: center; margin-bottom: 20px; background: var(--input-bg); padding: 6px; border-radius: 8px; display: inline-flex; width: 100%; justify-content: center; }
+        .lang-btn { flex: 1; padding: 10px; border: none; background: transparent; color: var(--text-sub); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 16px; }
         .lang-btn.active { background: var(--card-bg); color: var(--text-main); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         
         .form-group { margin-bottom: 16px; }
-        label { display: block; margin-bottom: 6px; font-weight: 700; color: var(--text-main); font-size: 14px; }
+        label { display: block; margin-bottom: 8px; font-weight: 700; color: var(--text-main); font-size: 17px; }
         
         input[type="number"] { 
             width: 100%; 
-            padding: 12px; 
+            padding: 14px; 
             box-sizing: border-box; 
             border: 1px solid var(--input-border); 
             border-radius: 10px; 
-            font-size: 15px; 
+            font-size: 18px; 
             background-color: var(--input-bg); 
             color: var(--text-main);
             transition: all 0.2s ease;
-            /* 核心滚动控制：距离顶部至少 20px，距离底部至少 350px (键盘高度) */
             scroll-margin-top: 20px;
             scroll-margin-bottom: 350px;
         }
@@ -105,7 +106,7 @@
             background-color: var(--card-bg); 
             box-shadow: 0 0 0 3px var(--btn-shadow);
         }
-        ::placeholder { color: var(--text-sub); }
+        ::placeholder { color: var(--text-sub); font-size: 16px; }
 
         .radio-group { display: flex; gap: 12px; }
         .radio-group label { 
@@ -117,12 +118,13 @@
             border-radius: 10px; 
             margin: 0; 
             font-weight: 500; 
-            padding: 12px 0; 
+            font-size: 17px;
+            padding: 14px 0; 
             width: 100%;
             background-color: var(--input-bg);
             transition: all 0.2s;
         }
-        .radio-group input { width: auto; margin-right: 8px; }
+        .radio-group input { width: auto; margin-right: 8px; transform: scale(1.3); }
         .radio-group label:has(input:checked) { 
             border-color: var(--btn-bg); 
             background: var(--green-bg); 
@@ -132,12 +134,12 @@
 
         button.calc-btn { 
             width: 100%; 
-            padding: 14px; 
+            padding: 16px; 
             background-color: var(--btn-bg); 
             color: white; 
             border: none; 
             border-radius: 10px; 
-            font-size: 18px; 
+            font-size: 20px; 
             font-weight: bold; 
             cursor: pointer; 
             margin-top: 10px; 
@@ -154,6 +156,7 @@
             box-shadow: 0 2px 4px var(--btn-shadow);
         }
 
+        /* 结果区 */
         #result { margin-top: 20px; display: none; }
 
         .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -197,6 +200,11 @@
         .card.month-standard { background-color: var(--white-bg); border-color: var(--green-border); }
         .card.month-standard .card-label { color: var(--green-text); }
         .card.month-standard .card-number { color: var(--green-text); }
+
+        /* 新增：肌肉率卡片 */
+        .card-muscle { background-color: var(--muscle-bg); border-color: var(--muscle-border); }
+        .card-muscle .card-label { color: var(--muscle-text); }
+        .card-muscle .card-number { color: var(--muscle-text); }
     </style>
 </head>
 <body>
@@ -235,6 +243,12 @@
         <input type="number" id="bodyfat" step="0.1" placeholder="如：20.5" required>
     </div>
 
+    <!-- 新增：肌肉输入框 -->
+    <div class="form-group">
+        <label id="lbl_muscle">肌肉(kg)</label>
+        <input type="number" id="muscle" step="0.1" placeholder="如：35.5" required>
+    </div>
+
     <button class="calc-btn" onclick="calculate()" id="btn_calc">开始分析</button>
 
     <div id="result">
@@ -261,6 +275,13 @@
                 <div class="card-label" id="month-card-label">达标所需时间</div>
                 <div class="card-number" id="month-card-number">0</div>
                 <div class="card-sub" id="month-card-sub">个月</div>
+            </div>
+
+            <!-- 新增：肌肉率卡片，放在需要多少公斤下面（全宽） -->
+            <div class="card card-muscle full-width">
+                <div class="card-label" id="lbl_muscle_result">肌肉率</div>
+                <div class="card-number" id="muscleRatioText">0.0</div>
+                <div class="card-sub">%</div>
             </div>
         </div>
     </div>
@@ -292,19 +313,21 @@
             title: "智能健康分析助手",
             subtitle: "输入数据，精准评估你的健康指标",
             lbl_gender: "性别", lbl_female: "女性", lbl_male: "男性",
-            lbl_height: "身高 (cm) [140-190]", lbl_weight: "当前体重 (kg)", lbl_bodyfat: "体脂率 (%)", btn_calc: "开始分析",
+            lbl_height: "身高 (cm) [140-190]", lbl_weight: "当前体重 (kg)", lbl_bodyfat: "体脂率 (%)", lbl_muscle: "肌肉(kg)", btn_calc: "开始分析",
             lbl_fat_label: "体脂重量", lbl_ideal_label: "标准体重区间",
             gap_lose: "需要减少", gap_gain: "需要增加", gap_std: "已达标无需增减",
-            month_label: "达标所需时间", month_months: "个月", month_weeks: "约{weeks}周", month_std: "不需改变"
+            month_label: "达标所需时间", month_months: "个月", month_weeks: "约{weeks}周", month_std: "不需改变",
+            lbl_muscle_result: "肌肉率"
         },
         en: {
             title: "Smart Health Analyzer",
             subtitle: "Input your data for accurate health assessment",
             lbl_gender: "Gender", lbl_female: "Female", lbl_male: "Male",
-            lbl_height: "Height (cm) [140-190]", lbl_weight: "Weight (kg)", lbl_bodyfat: "Body Fat (%)", btn_calc: "Analyze",
+            lbl_height: "Height (cm) [140-190]", lbl_weight: "Weight (kg)", lbl_bodyfat: "Body Fat (%)", lbl_muscle: "Muscle (kg)", btn_calc: "Analyze",
             lbl_fat_label: "Fat Mass", lbl_ideal_label: "Ideal Range",
             gap_lose: "Need to Lose", gap_gain: "Need to Gain", gap_std: "Within Range!",
-            month_label: "Time to Goal", month_months: "months", month_weeks: "~{weeks}wks", month_std: "No Change"
+            month_label: "Time to Goal", month_months: "months", month_weeks: "~{weeks}wks", month_std: "No Change",
+            lbl_muscle_result: "Muscle Ratio"
         }
     };
 
@@ -324,10 +347,12 @@
         document.getElementById('lbl_height').innerText = t.lbl_height;
         document.getElementById('lbl_weight').innerText = t.lbl_weight;
         document.getElementById('lbl_bodyfat').innerText = t.lbl_bodyfat;
+        document.getElementById('lbl_muscle').innerText = t.lbl_muscle;
         document.getElementById('btn_calc').innerText = t.btn_calc;
         document.getElementById('lbl_fat_label').innerText = t.lbl_fat_label;
         document.getElementById('lbl_ideal_label').innerText = t.lbl_ideal_label;
         document.getElementById('month-card-label').innerText = t.month_label;
+        document.getElementById('lbl_muscle_result').innerText = t.lbl_muscle_result;
 
         if (document.getElementById('result').style.display === 'block') calculate();
     }
@@ -336,12 +361,18 @@
         const heightInput = parseFloat(document.getElementById('height').value);
         const weight = parseFloat(document.getElementById('weight').value);
         const bodyfat = parseFloat(document.getElementById('bodyfat').value);
+        const muscle = parseFloat(document.getElementById('muscle').value);
         const gender = document.querySelector('input[name="gender"]:checked').value;
 
         const t = translations[currentLang];
 
-        if (!heightInput || !weight || bodyfat === '' || heightInput < 140 || heightInput > 190) {
-            alert(currentLang === 'zh' ? "请输入有效的数值（身高需在140-190之间）" : "Please enter valid values (Height must be 140-190)");
+        if (!heightInput || !weight || bodyfat === '' || !muscle || heightInput < 140 || heightInput > 190) {
+            alert(currentLang === 'zh' ? "请输入有效的数值（身高需在140-190之间，肌肉量需大于0）" : "Please enter valid values (Height must be 140-190, Muscle must be > 0)");
+            return;
+        }
+
+        if (muscle >= weight) {
+            alert(currentLang === 'zh' ? "肌肉量不能大于或等于体重，请检查输入。" : "Muscle mass cannot be greater than or equal to total weight, please check your inputs.");
             return;
         }
 
@@ -360,6 +391,10 @@
         }
 
         const fatMass = weight * (bodyfat / 100);
+        
+        // 新增：计算肌肉率
+        const muscleRatio = (muscle / weight) * 100;
+
         let gapDiff = 0;
         let type = 'standard';
         
@@ -378,6 +413,9 @@
 
         document.getElementById('fatMassText').innerText = fatMass.toFixed(1);
         document.getElementById('idealWeightText').innerText = idealMin + " - " + idealMax;
+        
+        // 显示肌肉率
+        document.getElementById('muscleRatioText').innerText = muscleRatio.toFixed(1);
 
         const gapCard = document.getElementById('gap-card');
         const gapLabel = document.getElementById('gap-card-label');
@@ -422,25 +460,22 @@
         document.getElementById('result').style.display = 'block';
     }
 
-    // 【终极核心优化】智能视口滚动控制 (处理键盘遮挡)
-    // 确保用户在输入时，输入框刚好在屏幕上方 1/3 的位置，无遮挡，也不在正中间
+    // 智能视口滚动控制 (处理键盘遮挡)
     if (window.visualViewport) {
         window.visualViewport.addEventListener('resize', () => {
-            // 键盘弹起或收起时
             const activeElement = document.activeElement;
             if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'SELECT' || activeElement.tagName === 'TEXTAREA')) {
                 setTimeout(() => {
                     const rect = activeElement.getBoundingClientRect();
                     const keyboardHeight = window.innerHeight - window.visualViewport.height;
                     
-                    // 计算目标位置：让输入框位于可视区域的 1/3 处
                     const targetY = rect.top + window.scrollY - (window.visualViewport.height / 3) + (rect.height / 2);
                     
                     window.scrollTo({
                         top: targetY,
                         behavior: 'smooth'
                     });
-                }, 200); // 稍微延迟等键盘动画结束
+                }, 200);
             }
         });
     }
