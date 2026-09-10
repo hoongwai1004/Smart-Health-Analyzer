@@ -156,6 +156,32 @@
             box-shadow: 0 2px 4px var(--btn-shadow);
         }
 
+        /* 清除按钮 —— 红色主题 */
+        button.clear-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: #d32f2f;   /* 红色背景 */
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        button.clear-btn:hover {
+            background-color: #b71c1c;   /* 深红 hover */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
+        }
+        button.clear-btn:active {
+            transform: translateY(0);
+            background-color: #9a0007;
+            box-shadow: 0 2px 4px rgba(211, 47, 47, 0.4);
+        }
+
         /* 结果区 */
         #result { margin-top: 20px; display: none; }
 
@@ -250,6 +276,8 @@
     </div>
 
     <button class="calc-btn" onclick="calculate()" id="btn_calc">开始分析</button>
+    <!-- 清除按钮（红色） -->
+    <button class="clear-btn" onclick="clearAll()" id="btn_clear">清除数据</button>
 
     <div id="result">
         <div class="card-grid">
@@ -313,7 +341,7 @@
             title: "智能健康分析助手",
             subtitle: "输入数据，精准评估你的健康指标",
             lbl_gender: "性别", lbl_female: "女性", lbl_male: "男性",
-            lbl_height: "身高 (cm) [140-190]", lbl_weight: "当前体重 (kg)", lbl_bodyfat: "体脂率 (%)", lbl_muscle: "肌肉(kg)", btn_calc: "开始分析",
+            lbl_height: "身高 (cm) [140-190]", lbl_weight: "当前体重 (kg)", lbl_bodyfat: "体脂率 (%)", lbl_muscle: "肌肉(kg)", btn_calc: "开始分析", btn_clear: "清除数据",
             lbl_fat_label: "体脂重量", lbl_ideal_label: "标准体重区间",
             gap_lose: "需要减少", gap_gain: "需要增加", gap_std: "已达标无需增减",
             month_label: "达标所需时间", month_months: "个月", month_weeks: "约{weeks}周", month_std: "不需改变",
@@ -323,7 +351,7 @@
             title: "Smart Health Analyzer",
             subtitle: "Input your data for accurate health assessment",
             lbl_gender: "Gender", lbl_female: "Female", lbl_male: "Male",
-            lbl_height: "Height (cm) [140-190]", lbl_weight: "Weight (kg)", lbl_bodyfat: "Body Fat (%)", lbl_muscle: "Muscle (kg)", btn_calc: "Analyze",
+            lbl_height: "Height (cm) [140-190]", lbl_weight: "Weight (kg)", lbl_bodyfat: "Body Fat (%)", lbl_muscle: "Muscle (kg)", btn_calc: "Analyze", btn_clear: "Clear All",
             lbl_fat_label: "Fat Mass", lbl_ideal_label: "Ideal Range",
             gap_lose: "Need to Lose", gap_gain: "Need to Gain", gap_std: "Within Range!",
             month_label: "Time to Goal", month_months: "months", month_weeks: "~{weeks}wks", month_std: "No Change",
@@ -349,6 +377,7 @@
         document.getElementById('lbl_bodyfat').innerText = t.lbl_bodyfat;
         document.getElementById('lbl_muscle').innerText = t.lbl_muscle;
         document.getElementById('btn_calc').innerText = t.btn_calc;
+        document.getElementById('btn_clear').innerText = t.btn_clear;
         document.getElementById('lbl_fat_label').innerText = t.lbl_fat_label;
         document.getElementById('lbl_ideal_label').innerText = t.lbl_ideal_label;
         document.getElementById('month-card-label').innerText = t.month_label;
@@ -458,6 +487,29 @@
         }
 
         document.getElementById('result').style.display = 'block';
+    }
+
+    // 清除所有输入与结果
+    function clearAll() {
+        // 关闭键盘（若输入框处于聚焦状态）
+        if (document.activeElement && typeof document.activeElement.blur === 'function') {
+            document.activeElement.blur();
+        }
+
+        // 清空所有数字输入框
+        document.getElementById('height').value = '';
+        document.getElementById('weight').value = '';
+        document.getElementById('bodyfat').value = '';
+        document.getElementById('muscle').value = '';
+
+        // 重置性别为默认（女性）
+        document.querySelector('input[name="gender"][value="female"]').checked = true;
+
+        // 隐藏结果区
+        document.getElementById('result').style.display = 'none';
+
+        // 平滑回到顶部
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // 智能视口滚动控制 (处理键盘遮挡)
