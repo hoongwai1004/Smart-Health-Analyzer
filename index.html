@@ -4,127 +4,101 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <meta name="color-scheme" content="light dark">
+<meta name="description" content="输入身高、体重、体脂率与肌肉量，快速评估体重状态与达标时间。">
 <title>智能健康分析助手 · Smart Health Analyzer</title>
 
-<!-- Apply the saved theme before first paint to avoid flash -->
+<!-- Apply saved theme before first paint to avoid flash -->
 <script>
 (function () {
-  var theme = 'light';
+  var t = 'light';
   try {
-    var saved = localStorage.getItem('sha-theme');
-    if (saved === 'light' || saved === 'dark') {
-      theme = saved;
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      theme = 'dark';
-    }
+    var s = localStorage.getItem('sha-theme');
+    if (s === 'light' || s === 'dark') t = s;
+    else if (matchMedia('(prefers-color-scheme: dark)').matches) t = 'dark';
   } catch (e) {}
-  document.documentElement.setAttribute('data-theme', theme);
+  document.documentElement.setAttribute('data-theme', t);
 })();
 </script>
 
 <style>
 /* =========================================================
-   Design tokens — light values are the default.
-   Dark values apply when data-theme="dark".
+   1. Design tokens
    ========================================================= */
 :root{
   color-scheme: light;
 
-  --bg:           #eef1f6;
-  --card:         #ffffff;
-  --card-2:       #f6f8fb;
-  --line:         #e4e9f0;
-  --text:         #0f172a;
-  --muted:        #64748b;
+  --bg:      #eef1f6;  --card:    #ffffff;  --card-2: #f6f8fb;
+  --line:    #e4e9f0;  --text:    #0f172a;  --muted:  #64748b;
 
-  --brand:        #10b981;
-  --brand-solid:  #10b981;
-  --brand-ink:    #047857;
-  --brand-soft:   #e8f8f1;
-  --brand-ring:   rgba(16,185,129,.18);
-  --brand-glow:   rgba(16,185,129,.35);
+  --brand:       #10b981;  --brand-solid: #10b981;  --brand-ink:  #047857;
+  --brand-soft:  #e8f8f1;  --brand-ring:  rgba(16,185,129,.18);
+  --brand-glow:  rgba(16,185,129,.35);
 
-  --danger:       #ef4444;
-  --danger-ink:   #b91c1c;
-  --danger-soft:  #fee2e2;
-  --danger-ring:  rgba(239,68,68,.15);
+  --danger:      #ef4444;  --danger-ink:  #b91c1c;  --danger-soft: #fee2e2;
+  --danger-ring: rgba(239,68,68,.15);
 
-  --info-ink:     #1d4ed8;
-  --info-soft:    #dbeafe;
-
-  --violet-ink:   #6d28d9;
-  --violet-soft:  #ede9fe;
-
-  --amber-ink:    #b45309;
-  --amber-soft:   #fef3c7;
-
-  --cyan-ink:     #0e7490;
-  --cyan-soft:    #cffafe;
+  --info-ink:    #1d4ed8;  --info-soft:   #dbeafe;
+  --violet-ink:  #6d28d9;  --violet-soft: #ede9fe;
+  --amber-ink:   #b45309;  --amber-soft:  #fef3c7;
+  --cyan-ink:    #0e7490;  --cyan-soft:   #cffafe;
 
   --shadow-sm: 0 1px 2px rgba(15,23,42,.06);
   --shadow:    0 1px 2px rgba(15,23,42,.04), 0 10px 30px -14px rgba(15,23,42,.22);
 
-  --r-lg: 20px;
-  --r-md: 14px;
-  --r-sm: 11px;
+  --r-lg: 20px;  --r-md: 14px;  --r-sm: 11px;
+  --ease: cubic-bezier(.22,1,.36,1);
 }
 
 :root[data-theme="dark"]{
   color-scheme: dark;
 
-  --bg:           #0b1220;
-  --card:         #131c2b;
-  --card-2:       #1a2434;
-  --line:         #26324a;
-  --text:         #e9eef7;
-  --muted:        #93a3b8;
+  --bg:      #0b1220;  --card:    #131c2b;  --card-2: #1a2434;
+  --line:    #26324a;  --text:    #e9eef7;  --muted:  #93a3b8;
 
-  --brand:        #34d399;
-  --brand-solid:  #059669;
-  --brand-ink:    #6ee7b7;
-  --brand-soft:   #0c2b22;
-  --brand-ring:   rgba(52,211,153,.20);
-  --brand-glow:   rgba(5,150,105,.45);
+  --brand:       #34d399;  --brand-solid: #059669;  --brand-ink:  #6ee7b7;
+  --brand-soft:  #0c2b22;  --brand-ring:  rgba(52,211,153,.20);
+  --brand-glow:  rgba(5,150,105,.45);
 
-  --danger:       #f87171;
-  --danger-ink:   #fca5a5;
-  --danger-soft:  #3a1416;
-  --danger-ring:  rgba(248,113,113,.20);
+  --danger:      #f87171;  --danger-ink:  #fca5a5;  --danger-soft: #3a1416;
+  --danger-ring: rgba(248,113,113,.20);
 
-  --info-ink:     #93c5fd;
-  --info-soft:    #13233d;
-
-  --violet-ink:   #c4b5fd;
-  --violet-soft:  #241a3d;
-
-  --amber-ink:    #fcd34d;
-  --amber-soft:   #3a2a0a;
-
-  --cyan-ink:     #67e8f9;
-  --cyan-soft:    #0a2b33;
+  --info-ink:    #93c5fd;  --info-soft:   #13233d;
+  --violet-ink:  #c4b5fd;  --violet-soft: #241a3d;
+  --amber-ink:   #fcd34d;  --amber-soft:  #3a2a0a;
+  --cyan-ink:    #67e8f9;  --cyan-soft:   #0a2b33;
 
   --shadow-sm: 0 1px 2px rgba(0,0,0,.40);
   --shadow:    0 1px 2px rgba(0,0,0,.40), 0 12px 32px -16px rgba(0,0,0,.70);
 }
 
-/* ============ Base ============ */
+/* =========================================================
+   2. Base
+   ========================================================= */
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0}
 body{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,
               "PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
   background:var(--bg);
   color:var(--text);
   -webkit-font-smoothing:antialiased;
   -webkit-text-size-adjust:100%;
-  min-height:100vh;
   min-height:100dvh;
   padding:20px 16px 56px;
   transition:background .25s ease, color .25s ease;
 }
 [hidden]{display:none !important}
 
-/* ============ App shell ============ */
+/* Shared transitions on theme-aware surfaces */
+.panel, .segmented, .theme-toggle, .input-wrap input,
+.range-track, .status, .metric {
+  transition:background .25s ease, border-color .25s ease,
+             color .25s ease, box-shadow .25s ease;
+}
+
+/* =========================================================
+   3. App shell
+   ========================================================= */
 .app{max-width:470px;margin:0 auto}
 
 .app-header{
@@ -142,19 +116,17 @@ body{
 .brand h1{margin:0;font-size:21px;font-weight:800;letter-spacing:-.02em;line-height:1.25}
 .brand p{margin:3px 0 0;font-size:13px;color:var(--muted);line-height:1.4}
 
-/* header controls row (language + theme) */
-.header-controls{
-  display:flex;gap:10px;align-items:center;width:100%;
-}
+.header-controls{display:flex;gap:10px;align-items:center;width:100%}
 .lang-switch{flex:1 1 auto;min-width:0}
 
-/* ============ Segmented controls ============ */
+/* =========================================================
+   4. Segmented control
+   ========================================================= */
 .segmented{
   display:flex;gap:4px;padding:4px;
   background:var(--card-2);
   border:1px solid var(--line);
   border-radius:var(--r-md);
-  transition:background .25s ease, border-color .25s ease;
 }
 .seg-btn{
   position:relative;flex:1 1 0;min-width:0;
@@ -164,11 +136,10 @@ body{
   color:var(--muted);font:inherit;font-size:14px;font-weight:700;
   cursor:pointer;white-space:nowrap;
   -webkit-tap-highlight-color:transparent;
-  transition:background .18s ease,color .18s ease,box-shadow .18s ease;
+  transition:background .18s ease, color .18s ease, box-shadow .18s ease;
 }
 .seg-btn input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
 .seg-btn:hover{color:var(--text)}
-
 .seg-btn.is-active,
 .seg-btn:has(input:checked){
   background:var(--brand-soft);
@@ -176,12 +147,13 @@ body{
   box-shadow:inset 0 0 0 1.5px var(--brand);
 }
 
-/* Theme toggle — single icon button */
+/* =========================================================
+   5. Theme toggle
+   ========================================================= */
 .theme-toggle{
   flex:0 0 auto;
   display:inline-grid;place-items:center;
-  width:44px;height:44px;
-  padding:0;
+  width:44px;height:44px;padding:0;
   border:1px solid var(--line);
   border-radius:var(--r-md);
   background:var(--card-2);
@@ -196,36 +168,33 @@ body{
   border-color:var(--brand);
   background:var(--brand-soft);
 }
-.theme-toggle:active{ transform:scale(.94) }
-.theme-toggle:focus-visible{
-  outline:none;
-  box-shadow:0 0 0 4px var(--brand-ring);
-}
+.theme-toggle:active{transform:scale(.94)}
+.theme-toggle:focus-visible{outline:none;box-shadow:0 0 0 4px var(--brand-ring)}
 .theme-toggle svg{
   width:20px;height:20px;
   fill:none;stroke:currentColor;
   stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
 }
-/* Show moon in light mode, sun in dark mode */
-.theme-toggle .icon-sun{ display:none }
-.theme-toggle .icon-moon{ display:block }
-:root[data-theme="dark"] .theme-toggle .icon-sun{ display:block }
-:root[data-theme="dark"] .theme-toggle .icon-moon{ display:none }
+.theme-toggle .icon-sun{display:none}
+:root[data-theme="dark"] .theme-toggle .icon-sun{display:block}
+:root[data-theme="dark"] .theme-toggle .icon-moon{display:none}
 
-/* ============ Layout ============ */
+/* =========================================================
+   6. Layout & panels
+   ========================================================= */
 .layout{display:grid;gap:16px}
 
-/* ============ Panel ============ */
 .panel{
   background:var(--card);
   border:1px solid var(--line);
   border-radius:var(--r-lg);
   box-shadow:var(--shadow);
   padding:20px;
-  transition:background .25s ease, border-color .25s ease, box-shadow .25s ease;
 }
 
-/* ============ Form ============ */
+/* =========================================================
+   7. Form
+   ========================================================= */
 .form{display:flex;flex-direction:column;gap:18px}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
 
@@ -247,7 +216,6 @@ body{
   border-radius:var(--r-sm);
   -moz-appearance:textfield;
   scroll-margin:24px;
-  transition:border-color .18s,box-shadow .18s,background .18s,color .18s;
 }
 .input-wrap input::-webkit-outer-spin-button,
 .input-wrap input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
@@ -281,23 +249,27 @@ body{
   40%,60%{transform:translateX(6px)}
 }
 
-/* ============ Buttons ============ */
+/* =========================================================
+   8. Buttons
+   ========================================================= */
 .actions{display:flex;flex-direction:column;gap:10px;margin-top:2px}
 .btn{
   width:100%;padding:15px 18px;
   border:1.5px solid transparent;border-radius:var(--r-sm);
   font:inherit;font-size:16px;font-weight:800;letter-spacing:.01em;
   cursor:pointer;-webkit-tap-highlight-color:transparent;
-  transition:transform .16s ease,background .18s ease,box-shadow .18s ease,
-             color .18s ease,border-color .18s ease,filter .18s ease;
+  transition:transform .16s ease, background .18s ease, box-shadow .18s ease,
+             color .18s ease, border-color .18s ease, filter .18s ease;
 }
 .btn:active{transform:translateY(1px) scale(.995)}
 .btn-primary{
   background:var(--brand-solid);color:#fff;
   box-shadow:0 8px 20px -10px var(--brand-glow);
 }
-.btn-primary:hover{filter:brightness(1.07);transform:translateY(-1px);
-  box-shadow:0 12px 24px -10px var(--brand-glow)}
+.btn-primary:hover{
+  filter:brightness(1.07);transform:translateY(-1px);
+  box-shadow:0 12px 24px -10px var(--brand-glow);
+}
 .btn-primary:active{filter:brightness(.95);transform:translateY(0)}
 .btn-ghost{
   background:transparent;color:var(--muted);
@@ -309,7 +281,9 @@ body{
   background:var(--danger-soft);
 }
 
-/* ============ Empty state ============ */
+/* =========================================================
+   9. Empty state
+   ========================================================= */
 .empty-panel{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:12px;text-align:center;padding:38px 24px;color:var(--muted);
@@ -317,19 +291,91 @@ body{
 .empty-panel svg{width:38px;height:38px;opacity:.45}
 .empty-panel p{margin:0;font-size:14px;font-weight:600;line-height:1.55;max-width:250px}
 
-/* ============ Results ============ */
-.result-panel{scroll-margin-top:16px;animation:rise .4s cubic-bezier(.22,1,.36,1)}
+/* =========================================================
+   10. Results
+   ========================================================= */
+.result-panel{scroll-margin-top:16px;animation:rise .4s var(--ease)}
 @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
+/* ---------- BMI hero ---------- */
+.bmi-hero{
+  padding:18px 18px 14px;
+  border-radius:var(--r-md);
+  margin-bottom:16px;
+  transition:background .3s ease, color .3s ease;
+}
+.bmi-hero[data-cat="under"] {background:var(--cyan-soft);  color:var(--cyan-ink)}
+.bmi-hero[data-cat="normal"]{background:var(--brand-soft); color:var(--brand-ink)}
+.bmi-hero[data-cat="over"]  {background:var(--amber-soft); color:var(--amber-ink)}
+.bmi-hero[data-cat="obese"] {background:var(--danger-soft);color:var(--danger-ink)}
+
+.bmi-hero-head{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  gap:14px;margin-bottom:16px;
+}
+.bmi-hero-value{display:flex;flex-direction:column;gap:2px;min-width:0}
+.bmi-hero-label{
+  font-size:10.5px;font-weight:800;letter-spacing:.10em;
+  text-transform:uppercase;opacity:.85;
+}
+.bmi-hero-number{
+  font-size:46px;font-weight:900;line-height:1;
+  letter-spacing:-.045em;font-variant-numeric:tabular-nums;
+}
+.bmi-hero-cat{
+  display:flex;flex-direction:column;align-items:flex-end;
+  gap:2px;text-align:right;padding-bottom:4px;
+}
+.bmi-hero-cat strong{font-size:17px;font-weight:800;letter-spacing:-.015em}
+.bmi-hero-cat span{
+  font-size:11.5px;font-weight:700;opacity:.8;
+  font-variant-numeric:tabular-nums;
+}
+
+.bmi-scale-track{
+  position:relative;display:flex;height:9px;border-radius:999px;
+}
+.bmi-seg{height:100%}
+.bmi-seg:first-child{border-radius:999px 0 0 999px}
+.bmi-seg:last-child {border-radius:0 999px 999px 0}
+.bmi-seg--under {flex:4.5;background:var(--cyan-ink);   opacity:.38}
+.bmi-seg--normal{flex:6.5;background:var(--brand-ink);  opacity:.55}
+.bmi-seg--over  {flex:5;  background:var(--amber-ink);  opacity:.50}
+.bmi-seg--obese {flex:10; background:var(--danger-ink); opacity:.48}
+
+.bmi-scale-marker{
+  position:absolute;top:50%;left:50%;
+  width:16px;height:16px;
+  border-radius:50%;
+  background:currentColor;
+  border:3px solid var(--card);
+  transform:translate(-50%,-50%);
+  box-shadow:0 2px 8px rgba(0,0,0,.28);
+  z-index:2;
+  transition:left .6s var(--ease);
+}
+.bmi-scale-labels{
+  display:flex;margin-top:8px;
+  font-size:10.5px;font-weight:800;
+  letter-spacing:.01em;opacity:.82;
+}
+.bmi-scale-labels span{
+  text-align:center;white-space:nowrap;overflow:hidden;
+}
+.bmi-scale-labels span:nth-child(1){flex:4.5}
+.bmi-scale-labels span:nth-child(2){flex:6.5}
+.bmi-scale-labels span:nth-child(3){flex:5}
+.bmi-scale-labels span:nth-child(4){flex:10}
+
+/* ---------- Status banner ---------- */
 .status{
   display:flex;align-items:center;gap:13px;
   padding:15px;border-radius:var(--r-md);
   border:1.5px solid transparent;
-  transition:background .25s,color .25s,border-color .25s;
 }
 .status[data-state="lose"]{background:var(--danger-soft);color:var(--danger-ink);border-color:var(--danger-ring)}
-.status[data-state="gain"]{background:var(--info-soft);color:var(--info-ink);border-color:transparent}
-.status[data-state="ok"]{background:var(--brand-soft);color:var(--brand-ink);border-color:var(--brand-ring)}
+.status[data-state="gain"]{background:var(--info-soft);  color:var(--info-ink);  border-color:transparent}
+.status[data-state="ok"]  {background:var(--brand-soft); color:var(--brand-ink); border-color:var(--brand-ring)}
 
 .status-icon{
   flex:none;width:38px;height:38px;border-radius:50%;
@@ -337,10 +383,11 @@ body{
   background:currentColor;
 }
 .status-icon svg{
-  width:19px;height:19px;display:none;
+  width:19px;height:19px;
   stroke:var(--card);stroke-width:2.6;
   stroke-linecap:round;stroke-linejoin:round;fill:none;
 }
+.status-icon path{display:none}
 .status[data-state="lose"] .ico-lose,
 .status[data-state="gain"] .ico-gain,
 .status[data-state="ok"]   .ico-ok{display:block}
@@ -349,21 +396,23 @@ body{
 .status-text strong{font-size:16.5px;font-weight:800;letter-spacing:-.01em}
 .status-text span{font-size:12.5px;font-weight:600;opacity:.9;line-height:1.4}
 
-/* range bar */
+/* ---------- Weight range bar ---------- */
 .range{margin-top:20px}
 .range-head{
   display:flex;align-items:baseline;justify-content:space-between;
   gap:10px;margin-bottom:10px;
 }
-.range-title{font-size:12px;font-weight:800;letter-spacing:.04em;
-  text-transform:uppercase;color:var(--muted)}
-.range-current{font-size:13.5px;font-weight:800;color:var(--text);
-  font-variant-numeric:tabular-nums}
-
+.range-title{
+  font-size:12px;font-weight:800;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--muted);
+}
+.range-current{
+  font-size:13.5px;font-weight:800;color:var(--text);
+  font-variant-numeric:tabular-nums;
+}
 .range-track{
   position:relative;height:10px;border-radius:999px;
   background:var(--card-2);border:1px solid var(--line);
-  transition:background .25s ease, border-color .25s ease;
 }
 .range-band{
   position:absolute;top:0;bottom:0;border-radius:999px;
@@ -376,15 +425,15 @@ body{
   border:3.5px solid var(--brand);
   transform:translate(-50%,-50%);
   box-shadow:0 2px 8px rgba(0,0,0,.18);
-  transition:left .55s cubic-bezier(.22,1,.36,1);
+  transition:left .55s var(--ease);
 }
 .range-scale{
-  display:flex;justify-content:space-between;
-  margin-top:8px;font-size:11.5px;font-weight:700;
-  color:var(--muted);font-variant-numeric:tabular-nums;
+  display:flex;justify-content:space-between;margin-top:8px;
+  font-size:11.5px;font-weight:700;color:var(--muted);
+  font-variant-numeric:tabular-nums;
 }
 
-/* metrics */
+/* ---------- Metric tiles ---------- */
 .metrics{
   display:grid;grid-template-columns:1fr 1fr;
   gap:11px;margin-top:20px;
@@ -422,12 +471,15 @@ body{
 #timeCard[data-state="ok"]{background:var(--brand-soft);border-color:transparent}
 #timeCard[data-state="ok"] .metric-label,#timeCard[data-state="ok"] .metric-value{color:var(--brand-ink)}
 
-/* ============ Responsive ============ */
+/* =========================================================
+   11. Responsive
+   ========================================================= */
 @media (max-width:359px){
   .grid-2{grid-template-columns:1fr}
   .metric-value{font-size:24px}
+  .bmi-hero-number{font-size:40px}
+  .bmi-hero-cat strong{font-size:15.5px}
 }
-
 @media (min-width:640px){
   .app-header{flex-direction:row;align-items:center;justify-content:space-between}
   .header-controls{width:auto}
@@ -435,7 +487,6 @@ body{
   .lang-switch .seg-btn{padding:9px 20px}
   .brand h1{font-size:23px}
 }
-
 @media (min-width:900px){
   body{padding:36px 24px 64px}
   .app{max-width:960px}
@@ -445,7 +496,6 @@ body{
   .result-panel{position:sticky;top:36px}
   .empty-panel{padding:80px 24px}
 }
-
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{
     animation-duration:.001ms !important;
@@ -480,11 +530,9 @@ body{
 
       <button type="button" class="theme-toggle" id="themeToggle"
               aria-label="Toggle theme" title="Toggle theme">
-        <!-- Moon shown in light mode (click → go dark) -->
         <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
         </svg>
-        <!-- Sun shown in dark mode (click → go light) -->
         <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
           <circle cx="12" cy="12" r="4"/>
           <path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>
@@ -582,11 +630,44 @@ body{
 
       <section class="panel result-panel" id="resultPanel" hidden>
 
+        <!-- BMI hero -->
+        <div class="bmi-hero" id="bmiHero" data-cat="normal">
+          <div class="bmi-hero-head">
+            <div class="bmi-hero-value">
+              <span class="bmi-hero-label" data-i18n="bmi_label">BMI</span>
+              <span class="bmi-hero-number" id="bmiValue">0.0</span>
+            </div>
+            <div class="bmi-hero-cat">
+              <strong id="bmiCategory">—</strong>
+              <span id="bmiCategoryRange">—</span>
+            </div>
+          </div>
+
+          <div class="bmi-scale">
+            <div class="bmi-scale-track">
+              <span class="bmi-seg bmi-seg--under"></span>
+              <span class="bmi-seg bmi-seg--normal"></span>
+              <span class="bmi-seg bmi-seg--over"></span>
+              <span class="bmi-seg bmi-seg--obese"></span>
+              <div class="bmi-scale-marker" id="bmiMarker"></div>
+            </div>
+            <div class="bmi-scale-labels" aria-hidden="true">
+              <span data-i18n="bmi_short_under">偏瘦</span>
+              <span data-i18n="bmi_short_normal">正常</span>
+              <span data-i18n="bmi_short_over">偏重</span>
+              <span data-i18n="bmi_short_obese">肥胖</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status banner -->
         <div class="status" id="status" data-state="ok">
           <div class="status-icon" aria-hidden="true">
-            <svg class="ico ico-lose" viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
-            <svg class="ico ico-gain" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-            <svg class="ico ico-ok"   viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+            <svg viewBox="0 0 24 24">
+              <path class="ico-lose" d="M12 5v14M19 12l-7 7-7-7"/>
+              <path class="ico-gain" d="M12 19V5M5 12l7-7 7 7"/>
+              <path class="ico-ok"   d="M20 6L9 17l-5-5"/>
+            </svg>
           </div>
           <div class="status-text">
             <strong id="statusTitle">—</strong>
@@ -594,6 +675,7 @@ body{
           </div>
         </div>
 
+        <!-- Weight range bar -->
         <div class="range">
           <div class="range-head">
             <span class="range-title" data-i18n="range_title">体重位置</span>
@@ -609,6 +691,7 @@ body{
           </div>
         </div>
 
+        <!-- Metric tiles -->
         <div class="metrics">
           <div class="metric metric--violet">
             <span class="metric-label" data-i18n="lbl_fat_label">体脂重量</span>
@@ -641,28 +724,40 @@ body{
 </div>
 
 <script>
+(() => {
+'use strict';
+
 /* =========================================================
-   Ideal weight reference table  [femaleMin, femaleMax, maleMin, maleMax]
+   Configuration
    ========================================================= */
-const IDEAL = {
-  140:[39.2,42.1,42.1,45.1], 141:[39.8,42.7,42.7,45.7], 142:[40.3,43.4,43.4,46.4],
-  143:[40.9,44.0,44.0,47.0], 144:[41.5,44.6,44.6,47.7], 145:[42.1,45.2,45.2,48.4],
-  146:[42.6,45.8,45.8,49.0], 147:[43.2,46.5,46.5,49.7], 148:[43.8,47.1,47.1,50.4],
-  149:[44.4,47.7,47.7,51.1], 150:[45.0,48.4,48.4,51.8], 151:[45.6,49.0,49.0,52.4],
-  152:[46.2,49.7,49.7,53.1], 153:[46.8,50.3,50.3,53.8], 154:[47.4,51.0,51.0,54.5],
-  155:[48.1,51.7,51.7,55.3], 156:[48.7,52.3,52.3,56.0], 157:[49.3,53.0,53.0,56.7],
-  158:[49.9,53.7,53.7,57.4], 159:[50.6,54.4,54.4,58.1], 160:[51.2,55.0,55.0,58.9],
-  161:[51.8,55.7,55.7,59.6], 162:[52.5,56.4,56.4,60.4], 163:[53.1,57.1,57.1,61.1],
-  164:[53.8,57.8,57.8,61.9], 165:[54.5,58.5,58.5,62.6], 166:[55.1,59.2,59.2,63.4],
-  167:[55.8,60.0,60.0,64.1], 168:[56.4,60.7,60.7,64.9], 169:[57.1,61.4,61.4,65.7],
-  170:[57.8,62.1,62.1,66.5], 171:[58.5,62.9,62.9,67.3], 172:[59.2,63.6,63.6,68.0],
-  173:[59.9,64.3,64.3,68.8], 174:[60.6,65.1,65.1,69.6], 175:[61.3,65.8,65.8,70.4],
-  176:[62.0,66.6,66.6,71.2], 177:[62.7,67.4,67.4,72.1], 178:[63.4,68.1,68.1,72.9],
-  179:[64.1,68.9,68.9,73.7], 180:[64.8,69.7,69.7,74.5], 181:[65.5,70.4,70.4,75.4],
-  182:[66.2,71.2,71.2,76.2], 183:[67.0,72.0,72.0,77.0], 184:[67.7,72.8,72.8,77.9],
-  185:[68.5,73.6,73.6,78.7], 186:[69.2,74.4,74.4,79.6], 187:[69.9,75.2,75.2,80.4],
-  188:[70.7,76.0,76.0,81.3], 189:[71.4,76.8,76.8,82.2], 190:[72.2,77.6,77.6,83.0]
+const CONFIG = {
+  HEIGHT_MIN : 140,
+  HEIGHT_MAX : 190,
+  WEIGHT_MAX : 500,
+  FAT_MIN    : 1,
+  FAT_MAX    : 75,
+  MONTHLY_RATE : 3,                    // kg per month (healthy pace)
+  BMI_BANDS  : { female: [20, 21.5], male: [21.5, 23] },
+  BMI_CDC    : { under: 18.5, over: 25, obese: 30 },
+  BMI_SCALE  : [14, 40]
 };
+
+/* Ideal weight range derived from BMI band × height².
+   This reproduces the previous 51-row lookup table exactly
+   (female BMI 20–21.5, male BMI 21.5–23) with two lines of code. */
+function idealWeights(heightCm, gender) {
+  const m2 = (heightCm / 100) ** 2;
+  const [lo, hi] = CONFIG.BMI_BANDS[gender];
+  return [lo * m2, hi * m2];
+}
+
+function bmiCategory(bmi) {
+  const c = CONFIG.BMI_CDC;
+  if (bmi < c.under) return 'under';
+  if (bmi < c.over)  return 'normal';
+  if (bmi < c.obese) return 'over';
+  return 'obese';
+}
 
 /* =========================================================
    Translations
@@ -689,9 +784,14 @@ const I18N = {
 
     empty_text: "填写资料后点击「开始分析」查看结果",
 
-    status_lose: "需要减重",
-    status_gain: "需要增重",
-    status_ok: "体重达标",
+    bmi_label: "BMI",
+    bmi_under: "偏瘦", bmi_normal: "正常", bmi_over: "偏重", bmi_obese: "肥胖",
+    bmi_short_under: "偏瘦", bmi_short_normal: "正常",
+    bmi_short_over: "偏重", bmi_short_obese: "肥胖",
+    bmi_range_under: "低于 18.5", bmi_range_normal: "18.5 – 25",
+    bmi_range_over: "25 – 30",    bmi_range_obese: "高于 30",
+
+    status_lose: "需要减重", status_gain: "需要增重", status_ok: "体重达标",
     status_lose_sub: "当前 {w} kg，超出标准上限 {d} kg",
     status_gain_sub: "当前 {w} kg，低于标准下限 {d} kg",
     status_ok_sub: "当前 {w} kg 处于标准范围内，继续保持",
@@ -729,8 +829,15 @@ const I18N = {
 
     empty_text: "Fill in your details and tap “Analyze” to see results",
 
-    status_lose: "Weight Loss Needed",
-    status_gain: "Weight Gain Needed",
+    bmi_label: "BMI",
+    bmi_under: "Underweight", bmi_normal: "Normal",
+    bmi_over: "Overweight",   bmi_obese: "Obese",
+    bmi_short_under: "Under", bmi_short_normal: "Normal",
+    bmi_short_over: "Over",   bmi_short_obese: "Obese",
+    bmi_range_under: "Below 18.5", bmi_range_normal: "18.5 – 25",
+    bmi_range_over: "25 – 30",     bmi_range_obese: "Above 30",
+
+    status_lose: "Weight Loss Needed", status_gain: "Weight Gain Needed",
     status_ok: "Within Healthy Range",
     status_lose_sub: "Currently {w} kg — {d} kg above the upper limit",
     status_gain_sub: "Currently {w} kg — {d} kg below the lower limit",
@@ -751,65 +858,60 @@ const I18N = {
 };
 
 /* =========================================================
-   State & elements
+   DOM references & state
    ========================================================= */
 const THEME_KEY = 'sha-theme';
 const state = { lang: 'zh', theme: 'light' };
 let lastResult = null;
 
-const $ = (sel) => document.querySelector(sel);
+const $ = id => document.getElementById(id);
+const $$ = sel => document.querySelectorAll(sel);
 
 const el = {
-  form:      $('#form'),
-  height:    $('#height'),
-  weight:    $('#weight'),
-  bodyfat:   $('#bodyfat'),
-  muscle:    $('#muscle'),
-  error:     $('#formError'),
-  empty:     $('#emptyState'),
-  panel:     $('#resultPanel'),
-  status:    $('#status'),
-  statusTitle: $('#statusTitle'),
-  statusSub:   $('#statusSub'),
-  currentWeight: $('#currentWeight'),
-  rangeBand:   $('#rangeBand'),
-  rangeMarker: $('#rangeMarker'),
-  scaleMin:  $('#scaleMin'),
-  scaleMax:  $('#scaleMax'),
-  fatMass:   $('#fatMass'),
-  muscleRatio: $('#muscleRatio'),
-  idealRange:  $('#idealRange'),
-  timeCard:  $('#timeCard'),
-  timeValue: $('#timeValue'),
-  timeUnit:  $('#timeUnit'),
-  timeSub:   $('#timeSub'),
-  themeToggle: $('#themeToggle')
+  form: $('form'), error: $('formError'),
+  height: $('height'), weight: $('weight'),
+  bodyfat: $('bodyfat'), muscle: $('muscle'),
+  empty: $('emptyState'), panel: $('resultPanel'),
+
+  bmiHero: $('bmiHero'), bmiValue: $('bmiValue'),
+  bmiCategory: $('bmiCategory'), bmiCategoryRange: $('bmiCategoryRange'),
+  bmiMarker: $('bmiMarker'),
+
+  status: $('status'), statusTitle: $('statusTitle'), statusSub: $('statusSub'),
+  currentWeight: $('currentWeight'),
+  rangeBand: $('rangeBand'), rangeMarker: $('rangeMarker'),
+  scaleMin: $('scaleMin'), scaleMax: $('scaleMax'),
+
+  fatMass: $('fatMass'), muscleRatio: $('muscleRatio'),
+  idealRange: $('idealRange'),
+  timeCard: $('timeCard'), timeValue: $('timeValue'),
+  timeUnit: $('timeUnit'), timeSub: $('timeSub'),
+
+  themeToggle: $('themeToggle')
 };
 
-/* =========================================================
-   Theme — single toggle between light & dark
-   ========================================================= */
-function applyTheme() {
-  document.documentElement.setAttribute('data-theme', state.theme);
+const FIELDS = [
+  { input: el.height,  rule: n => n >= CONFIG.HEIGHT_MIN && n <= CONFIG.HEIGHT_MAX, msg: 'err_height'  },
+  { input: el.weight,  rule: n => n > 0 && n <= CONFIG.WEIGHT_MAX,                  msg: 'err_weight'  },
+  { input: el.bodyfat, rule: n => n >= CONFIG.FAT_MIN && n <= CONFIG.FAT_MAX,       msg: 'err_bodyfat' },
+  { input: el.muscle,  rule: n => n > 0,                                            msg: 'err_muscle'  }
+];
 
-  const t = I18N[state.lang];
-  const label = state.theme === 'dark' ? t.theme_light : t.theme_dark;
+/* =========================================================
+   Theme
+   ========================================================= */
+function syncThemeButton() {
+  const label = I18N[state.lang][state.theme === 'dark' ? 'theme_light' : 'theme_dark'];
   el.themeToggle.setAttribute('aria-label', label);
   el.themeToggle.setAttribute('title', label);
   el.themeToggle.setAttribute('aria-pressed', String(state.theme === 'dark'));
 }
 
-function toggleTheme() {
-  state.theme = state.theme === 'dark' ? 'light' : 'dark';
-  try { localStorage.setItem(THEME_KEY, state.theme); } catch (e) {}
-  applyTheme();
-}
-
-function loadThemePreference() {
-  // The inline <head> script already set data-theme; read it back here.
-  const current = document.documentElement.getAttribute('data-theme');
-  state.theme = current === 'dark' ? 'dark' : 'light';
-  applyTheme();
+function setTheme(theme) {
+  state.theme = theme;
+  document.documentElement.setAttribute('data-theme', theme);
+  try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
+  syncThemeButton();
 }
 
 /* =========================================================
@@ -819,158 +921,163 @@ function applyI18n() {
   const t = I18N[state.lang];
   document.documentElement.lang = state.lang === 'zh' ? 'zh-CN' : 'en';
 
-  document.querySelectorAll('[data-i18n]').forEach(node => {
-    const key = node.dataset.i18n;
-    if (t[key] != null) node.textContent = t[key];
+  $$('[data-i18n]').forEach(n => {
+    const v = t[n.dataset.i18n];
+    if (v != null) n.textContent = v;
   });
-
-  document.querySelectorAll('[data-i18n-ph]').forEach(node => {
-    const key = node.dataset.i18nPh;
-    if (t[key] != null) node.placeholder = t[key];
+  $$('[data-i18n-ph]').forEach(n => {
+    const v = t[n.dataset.i18nPh];
+    if (v != null) n.placeholder = v;
   });
+  $$('.lang-switch .seg-btn').forEach(btn =>
+    btn.classList.toggle('is-active', btn.dataset.lang === state.lang)
+  );
 
-  document.querySelectorAll('.lang-switch .seg-btn').forEach(btn => {
-    btn.classList.toggle('is-active', btn.dataset.lang === state.lang);
-  });
-
-  // Refresh theme button label for the current language
-  applyTheme();
+  syncThemeButton();
 }
 
 function setLang(lang) {
-  if (state.lang === lang) return;
+  if (lang === state.lang) return;
   state.lang = lang;
   applyI18n();
   if (lastResult) renderResult();
 }
 
 /* =========================================================
-   Helpers
+   Validation
    ========================================================= */
 function showError(key) {
   el.error.textContent = I18N[state.lang][key] || key;
   el.error.hidden = false;
   el.error.classList.remove('shake');
-  void el.error.offsetWidth;      // restart animation
+  void el.error.offsetWidth;
   el.error.classList.add('shake');
 }
 
-function hideError() {
-  el.error.hidden = true;
-  el.error.classList.remove('shake');
-}
+const hideError = () => { el.error.hidden = true; el.error.classList.remove('shake'); };
+const clearInvalid = () => FIELDS.forEach(f => f.input.classList.remove('is-invalid'));
 
-function clearInvalid() {
-  [el.height, el.weight, el.bodyfat, el.muscle]
-    .forEach(input => input.classList.remove('is-invalid'));
+function readAndValidate() {
+  clearInvalid();
+  hideError();
+
+  const values = {
+    gender : document.querySelector('input[name="gender"]:checked').value,
+    height : parseFloat(el.height.value),
+    weight : parseFloat(el.weight.value),
+    bodyfat: parseFloat(el.bodyfat.value),
+    muscle : parseFloat(el.muscle.value)
+  };
+
+  for (const f of FIELDS) {
+    const v = values[f.input.id === 'bodyfat' ? 'bodyfat' : f.input.id];
+    if (!Number.isFinite(v) || !f.rule(v)) {
+      f.input.classList.add('is-invalid');
+      showError(f.msg);
+      f.input.focus({ preventScroll: false });
+      return null;
+    }
+  }
+  if (values.muscle >= values.weight) {
+    el.muscle.classList.add('is-invalid');
+    showError('err_muscle_big');
+    el.muscle.focus();
+    return null;
+  }
+  return values;
 }
 
 /* =========================================================
-   Core analysis
+   Analysis
    ========================================================= */
-function analyze() {
-  const h  = parseFloat(el.height.value);
-  const w  = parseFloat(el.weight.value);
-  const bf = parseFloat(el.bodyfat.value);
-  const m  = parseFloat(el.muscle.value);
-  const gender = document.querySelector('input[name="gender"]:checked').value;
+function analyze(values) {
+  const { gender, height, weight, bodyfat, muscle } = values;
 
-  hideError();
-  clearInvalid();
+  const [idealMin, idealMax] = idealWeights(height, gender);
+  const bmi = weight / (height / 100) ** 2;
 
-  /* --- validation --- */
-  if (!Number.isFinite(h) || h < 140 || h > 190) {
-    el.height.classList.add('is-invalid'); return showError('err_height');
-  }
-  if (!Number.isFinite(w) || w <= 0 || w > 500) {
-    el.weight.classList.add('is-invalid'); return showError('err_weight');
-  }
-  if (!Number.isFinite(bf) || bf < 1 || bf > 75) {
-    el.bodyfat.classList.add('is-invalid'); return showError('err_bodyfat');
-  }
-  if (!Number.isFinite(m) || m <= 0) {
-    el.muscle.classList.add('is-invalid'); return showError('err_muscle');
-  }
-  if (m >= w) {
-    el.muscle.classList.add('is-invalid'); return showError('err_muscle_big');
-  }
+  const mode = weight < idealMin ? 'gain'
+             : weight > idealMax ? 'lose'
+             : 'ok';
 
-  /* --- reference range --- */
-  const key = Math.min(190, Math.max(140, Math.round(h)));
-  const [fMin, fMax, mMin, mMax] = IDEAL[key];
-  const idealMin = gender === 'female' ? fMin : mMin;
-  const idealMax = gender === 'female' ? fMax : mMax;
+  const diff = mode === 'gain' ? idealMin - weight
+             : mode === 'lose' ? weight - idealMax
+             : 0;
 
-  /* --- derived metrics --- */
-  const fatMass     = w * (bf / 100);
-  const muscleRatio = (m / w) * 100;
-
-  let mode = 'ok';
-  let diff = 0;
-  if (w < idealMin)      { mode = 'gain'; diff = idealMin - w; }
-  else if (w > idealMax) { mode = 'lose'; diff = w - idealMax; }
-
-  const months = diff > 0 ? Math.ceil(diff / 3) : 0;
+  const months = diff > 0 ? Math.ceil(diff / CONFIG.MONTHLY_RATE) : 0;
   const weeks  = months * 4;
 
-  lastResult = { weight: w, mode, diff, months, weeks,
-                 fatMass, muscleRatio, idealMin, idealMax };
+  lastResult = {
+    weight, mode, diff, months, weeks,
+    idealMin, idealMax, bmi,
+    bmiCat      : bmiCategory(bmi),
+    fatMass     : weight * (bodyfat / 100),
+    muscleRatio : (muscle / weight) * 100
+  };
 
   renderResult();
   el.empty.hidden = true;
   el.panel.hidden = false;
 
-  /* bring results into view on stacked layouts */
-  if (window.matchMedia('(max-width: 899px)').matches) {
-    requestAnimationFrame(() => {
-      el.panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+  if (matchMedia('(max-width: 899px)').matches) {
+    requestAnimationFrame(() =>
+      el.panel.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    );
   }
 }
 
 /* =========================================================
    Render
    ========================================================= */
+const fill = (str, vars) => str.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '');
+
 function renderResult() {
   if (!lastResult) return;
   const t = I18N[state.lang];
   const r = lastResult;
+  const one = n => n.toFixed(1);
 
-  /* --- status banner --- */
+  /* --- BMI hero --- */
+  el.bmiHero.dataset.cat = r.bmiCat;
+  el.bmiValue.textContent = one(r.bmi);
+  el.bmiCategory.textContent      = t['bmi_' + r.bmiCat];
+  el.bmiCategoryRange.textContent = t['bmi_range_' + r.bmiCat];
+
+  const [sMinB, sMaxB] = CONFIG.BMI_SCALE;
+  const bmiPct = Math.min(97, Math.max(3,
+    ((r.bmi - sMinB) / (sMaxB - sMinB)) * 100
+  ));
+  el.bmiMarker.style.left = bmiPct + '%';
+
+  /* --- Status banner --- */
   el.status.dataset.state = r.mode;
-  el.statusTitle.textContent =
-    r.mode === 'lose' ? t.status_lose :
-    r.mode === 'gain' ? t.status_gain : t.status_ok;
+  el.statusTitle.textContent = t[{
+    lose: 'status_lose', gain: 'status_gain', ok: 'status_ok'
+  }[r.mode]];
+  el.statusSub.textContent = fill(t[{
+    lose: 'status_lose_sub', gain: 'status_gain_sub', ok: 'status_ok_sub'
+  }[r.mode]], { w: one(r.weight), d: one(r.diff) });
 
-  el.statusSub.textContent =
-    (r.mode === 'lose' ? t.status_lose_sub :
-     r.mode === 'gain' ? t.status_gain_sub : t.status_ok_sub)
-      .replace('{w}', r.weight.toFixed(1))
-      .replace('{d}', r.diff.toFixed(1));
+  /* --- Weight range bar --- */
+  const span  = Math.max(r.idealMax - r.idealMin, 4);
+  const pad   = span * 1.2;
+  const sMin  = Math.max(0, r.idealMin - pad);
+  const sMax  = r.idealMax + pad;
+  const total = sMax - sMin;
+  const pct   = v => ((v - sMin) / total) * 100;
 
-  /* --- range bar --- */
-  const span   = Math.max(r.idealMax - r.idealMin, 4);
-  const pad    = span * 1.2;
-  const sMin   = Math.max(0, r.idealMin - pad);
-  const sMax   = r.idealMax + pad;
-  const total  = sMax - sMin;
+  el.rangeBand.style.left  = pct(r.idealMin) + '%';
+  el.rangeBand.style.width = (pct(r.idealMax) - pct(r.idealMin)) + '%';
+  el.rangeMarker.style.left = Math.min(97, Math.max(3, pct(r.weight))) + '%';
 
-  const bandLeft  = ((r.idealMin - sMin) / total) * 100;
-  const bandWidth = ((r.idealMax - r.idealMin) / total) * 100;
-  const markerPct = Math.min(97, Math.max(3, ((r.weight - sMin) / total) * 100));
+  el.currentWeight.textContent = one(r.weight);
+  el.scaleMin.textContent = Math.round(sMin) + ' kg';
+  el.scaleMax.textContent = Math.round(sMax) + ' kg';
 
-  el.rangeBand.style.left  = bandLeft + '%';
-  el.rangeBand.style.width = bandWidth + '%';
-  el.rangeMarker.style.left = markerPct + '%';
-
-  el.currentWeight.textContent = r.weight.toFixed(1);
-  el.scaleMin.textContent = sMin.toFixed(0) + ' kg';
-  el.scaleMax.textContent = sMax.toFixed(0) + ' kg';
-
-  /* --- metric cards --- */
-  el.fatMass.textContent     = r.fatMass.toFixed(1);
-  el.muscleRatio.textContent = r.muscleRatio.toFixed(1);
-  el.idealRange.textContent  = r.idealMin.toFixed(1) + ' – ' + r.idealMax.toFixed(1);
+  /* --- Metric tiles --- */
+  el.fatMass.textContent     = one(r.fatMass);
+  el.muscleRatio.textContent = one(r.muscleRatio);
+  el.idealRange.textContent  = one(r.idealMin) + ' – ' + one(r.idealMax);
 
   el.timeCard.dataset.state = r.mode;
   if (r.mode === 'ok') {
@@ -980,7 +1087,7 @@ function renderResult() {
   } else {
     el.timeValue.textContent = r.months;
     el.timeUnit.textContent  = t.time_unit_months;
-    el.timeSub.textContent   = t.time_sub_weeks.replace('{weeks}', r.weeks);
+    el.timeSub.textContent   = fill(t.time_sub_weeks, { weeks: r.weeks });
   }
 }
 
@@ -988,15 +1095,12 @@ function renderResult() {
    Clear
    ========================================================= */
 function clearAll() {
-  if (document.activeElement && document.activeElement.blur) {
-    document.activeElement.blur();
-  }
+  if (document.activeElement?.blur) document.activeElement.blur();
 
-  [el.height, el.weight, el.bodyfat, el.muscle].forEach(input => {
-    input.value = '';
-    input.classList.remove('is-invalid');
+  FIELDS.forEach(f => {
+    f.input.value = '';
+    f.input.classList.remove('is-invalid');
   });
-
   document.querySelector('input[name="gender"][value="female"]').checked = true;
 
   hideError();
@@ -1010,32 +1114,37 @@ function clearAll() {
 /* =========================================================
    Events
    ========================================================= */
-el.form.addEventListener('submit', (evt) => {
-  evt.preventDefault();
-  analyze();
+el.form.addEventListener('submit', e => {
+  e.preventDefault();
+  const v = readAndValidate();
+  if (v) analyze(v);
 });
 
-document.getElementById('btnClear').addEventListener('click', clearAll);
+$('btnClear').addEventListener('click', clearAll);
 
-document.querySelectorAll('.lang-switch .seg-btn').forEach(btn => {
-  btn.addEventListener('click', () => setLang(btn.dataset.lang));
-});
+$$('.lang-switch .seg-btn').forEach(btn =>
+  btn.addEventListener('click', () => setLang(btn.dataset.lang))
+);
 
-el.themeToggle.addEventListener('click', toggleTheme);
+el.themeToggle.addEventListener('click', () =>
+  setTheme(state.theme === 'dark' ? 'light' : 'dark')
+);
 
-/* clear invalid state while typing */
-[el.height, el.weight, el.bodyfat, el.muscle].forEach(input => {
-  input.addEventListener('input', () => {
-    input.classList.remove('is-invalid');
+FIELDS.forEach(f =>
+  f.input.addEventListener('input', () => {
+    f.input.classList.remove('is-invalid');
     hideError();
-  });
-});
+  })
+);
 
 /* =========================================================
    Boot
    ========================================================= */
-loadThemePreference();
+state.theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+syncThemeButton();
 applyI18n();
+
+})();
 </script>
 </body>
 </html>
