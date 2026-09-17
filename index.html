@@ -5,83 +5,106 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <meta name="color-scheme" content="light dark">
 <title>智能健康分析助手 · Smart Health Analyzer</title>
+
+<!-- Apply the saved theme before first paint to avoid flash -->
+<script>
+(function () {
+  var theme = 'light';
+  try {
+    var saved = localStorage.getItem('sha-theme');
+    if (saved === 'light' || saved === 'dark') {
+      theme = saved;
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      theme = 'dark';
+    }
+  } catch (e) {}
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+
 <style>
-/* ============ Design tokens ============ */
+/* =========================================================
+   Design tokens — light values are the default.
+   Dark values apply when data-theme="dark".
+   ========================================================= */
 :root{
-  --bg:#eef1f6;
-  --card:#ffffff;
-  --card-2:#f6f8fb;
-  --line:#e4e9f0;
-  --text:#0f172a;
-  --muted:#64748b;
+  color-scheme: light;
 
-  --brand:#10b981;
-  --brand-solid:#10b981;
-  --brand-ink:#047857;
-  --brand-soft:#e8f8f1;
-  --brand-ring:rgba(16,185,129,.18);
-  --brand-glow:rgba(16,185,129,.35);
+  --bg:           #eef1f6;
+  --card:         #ffffff;
+  --card-2:       #f6f8fb;
+  --line:         #e4e9f0;
+  --text:         #0f172a;
+  --muted:        #64748b;
 
-  --danger:#ef4444;
-  --danger-ink:#b91c1c;
-  --danger-soft:#fee2e2;
-  --danger-ring:rgba(239,68,68,.15);
+  --brand:        #10b981;
+  --brand-solid:  #10b981;
+  --brand-ink:    #047857;
+  --brand-soft:   #e8f8f1;
+  --brand-ring:   rgba(16,185,129,.18);
+  --brand-glow:   rgba(16,185,129,.35);
 
-  --info-ink:#1d4ed8;
-  --info-soft:#dbeafe;
+  --danger:       #ef4444;
+  --danger-ink:   #b91c1c;
+  --danger-soft:  #fee2e2;
+  --danger-ring:  rgba(239,68,68,.15);
 
-  --violet-ink:#6d28d9;
-  --violet-soft:#ede9fe;
+  --info-ink:     #1d4ed8;
+  --info-soft:    #dbeafe;
 
-  --amber-ink:#b45309;
-  --amber-soft:#fef3c7;
+  --violet-ink:   #6d28d9;
+  --violet-soft:  #ede9fe;
 
-  --cyan-ink:#0e7490;
-  --cyan-soft:#cffafe;
+  --amber-ink:    #b45309;
+  --amber-soft:   #fef3c7;
 
-  --shadow:0 1px 2px rgba(15,23,42,.04), 0 10px 30px -14px rgba(15,23,42,.22);
-  --shadow-sm:0 1px 2px rgba(15,23,42,.06);
-  --r-lg:20px;
-  --r-md:14px;
-  --r-sm:11px;
+  --cyan-ink:     #0e7490;
+  --cyan-soft:    #cffafe;
+
+  --shadow-sm: 0 1px 2px rgba(15,23,42,.06);
+  --shadow:    0 1px 2px rgba(15,23,42,.04), 0 10px 30px -14px rgba(15,23,42,.22);
+
+  --r-lg: 20px;
+  --r-md: 14px;
+  --r-sm: 11px;
 }
 
-@media (prefers-color-scheme: dark){
-  :root{
-    --bg:#0b1220;
-    --card:#131c2b;
-    --card-2:#1a2434;
-    --line:#26324a;
-    --text:#e9eef7;
-    --muted:#93a3b8;
+:root[data-theme="dark"]{
+  color-scheme: dark;
 
-    --brand:#34d399;
-    --brand-solid:#059669;
-    --brand-ink:#6ee7b7;
-    --brand-soft:#0c2b22;
-    --brand-ring:rgba(52,211,153,.2);
-    --brand-glow:rgba(5,150,105,.45);
+  --bg:           #0b1220;
+  --card:         #131c2b;
+  --card-2:       #1a2434;
+  --line:         #26324a;
+  --text:         #e9eef7;
+  --muted:        #93a3b8;
 
-    --danger:#f87171;
-    --danger-ink:#fca5a5;
-    --danger-soft:#3a1416;
-    --danger-ring:rgba(248,113,113,.2);
+  --brand:        #34d399;
+  --brand-solid:  #059669;
+  --brand-ink:    #6ee7b7;
+  --brand-soft:   #0c2b22;
+  --brand-ring:   rgba(52,211,153,.20);
+  --brand-glow:   rgba(5,150,105,.45);
 
-    --info-ink:#93c5fd;
-    --info-soft:#13233d;
+  --danger:       #f87171;
+  --danger-ink:   #fca5a5;
+  --danger-soft:  #3a1416;
+  --danger-ring:  rgba(248,113,113,.20);
 
-    --violet-ink:#c4b5fd;
-    --violet-soft:#241a3d;
+  --info-ink:     #93c5fd;
+  --info-soft:    #13233d;
 
-    --amber-ink:#fcd34d;
-    --amber-soft:#3a2a0a;
+  --violet-ink:   #c4b5fd;
+  --violet-soft:  #241a3d;
 
-    --cyan-ink:#67e8f9;
-    --cyan-soft:#0a2b33;
+  --amber-ink:    #fcd34d;
+  --amber-soft:   #3a2a0a;
 
-    --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 32px -16px rgba(0,0,0,.7);
-    --shadow-sm:0 1px 2px rgba(0,0,0,.4);
-  }
+  --cyan-ink:     #67e8f9;
+  --cyan-soft:    #0a2b33;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.40);
+  --shadow:    0 1px 2px rgba(0,0,0,.40), 0 12px 32px -16px rgba(0,0,0,.70);
 }
 
 /* ============ Base ============ */
@@ -97,6 +120,7 @@ body{
   min-height:100vh;
   min-height:100dvh;
   padding:20px 16px 56px;
+  transition:background .25s ease, color .25s ease;
 }
 [hidden]{display:none !important}
 
@@ -118,14 +142,20 @@ body{
 .brand h1{margin:0;font-size:21px;font-weight:800;letter-spacing:-.02em;line-height:1.25}
 .brand p{margin:3px 0 0;font-size:13px;color:var(--muted);line-height:1.4}
 
-/* segmented control */
+/* header controls row (language + theme) */
+.header-controls{
+  display:flex;gap:10px;align-items:center;width:100%;
+}
+.lang-switch{flex:1 1 auto;min-width:0}
+
+/* ============ Segmented controls ============ */
 .segmented{
   display:flex;gap:4px;padding:4px;
   background:var(--card-2);
   border:1px solid var(--line);
   border-radius:var(--r-md);
+  transition:background .25s ease, border-color .25s ease;
 }
-.lang-switch{width:100%}
 .seg-btn{
   position:relative;flex:1 1 0;min-width:0;
   display:inline-flex;align-items:center;justify-content:center;
@@ -138,18 +168,49 @@ body{
 }
 .seg-btn input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
 .seg-btn:hover{color:var(--text)}
+
 .seg-btn.is-active,
-.seg-btn:has(input:checked){
-  background:var(--card);
-  color:var(--text);
-  box-shadow:var(--shadow-sm);
-}
-.seg-btn.is-active{color:var(--brand-ink)}
 .seg-btn:has(input:checked){
   background:var(--brand-soft);
   color:var(--brand-ink);
   box-shadow:inset 0 0 0 1.5px var(--brand);
 }
+
+/* Theme toggle — single icon button */
+.theme-toggle{
+  flex:0 0 auto;
+  display:inline-grid;place-items:center;
+  width:44px;height:44px;
+  padding:0;
+  border:1px solid var(--line);
+  border-radius:var(--r-md);
+  background:var(--card-2);
+  color:var(--muted);
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition:background .18s ease, color .18s ease,
+             border-color .18s ease, transform .18s ease;
+}
+.theme-toggle:hover{
+  color:var(--brand-ink);
+  border-color:var(--brand);
+  background:var(--brand-soft);
+}
+.theme-toggle:active{ transform:scale(.94) }
+.theme-toggle:focus-visible{
+  outline:none;
+  box-shadow:0 0 0 4px var(--brand-ring);
+}
+.theme-toggle svg{
+  width:20px;height:20px;
+  fill:none;stroke:currentColor;
+  stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+}
+/* Show moon in light mode, sun in dark mode */
+.theme-toggle .icon-sun{ display:none }
+.theme-toggle .icon-moon{ display:block }
+:root[data-theme="dark"] .theme-toggle .icon-sun{ display:block }
+:root[data-theme="dark"] .theme-toggle .icon-moon{ display:none }
 
 /* ============ Layout ============ */
 .layout{display:grid;gap:16px}
@@ -161,6 +222,7 @@ body{
   border-radius:var(--r-lg);
   box-shadow:var(--shadow);
   padding:20px;
+  transition:background .25s ease, border-color .25s ease, box-shadow .25s ease;
 }
 
 /* ============ Form ============ */
@@ -185,7 +247,7 @@ body{
   border-radius:var(--r-sm);
   -moz-appearance:textfield;
   scroll-margin:24px;
-  transition:border-color .18s,box-shadow .18s,background .18s;
+  transition:border-color .18s,box-shadow .18s,background .18s,color .18s;
 }
 .input-wrap input::-webkit-outer-spin-button,
 .input-wrap input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
@@ -301,6 +363,7 @@ body{
 .range-track{
   position:relative;height:10px;border-radius:999px;
   background:var(--card-2);border:1px solid var(--line);
+  transition:background .25s ease, border-color .25s ease;
 }
 .range-band{
   position:absolute;top:0;bottom:0;border-radius:999px;
@@ -367,7 +430,8 @@ body{
 
 @media (min-width:640px){
   .app-header{flex-direction:row;align-items:center;justify-content:space-between}
-  .lang-switch{width:auto;flex:none}
+  .header-controls{width:auto}
+  .lang-switch{flex:none}
   .lang-switch .seg-btn{padding:9px 20px}
   .brand h1{font-size:23px}
 }
@@ -408,9 +472,24 @@ body{
       </div>
     </div>
 
-    <div class="segmented lang-switch" role="group" aria-label="Language">
-      <button type="button" class="seg-btn is-active" data-lang="zh">华语</button>
-      <button type="button" class="seg-btn" data-lang="en">English</button>
+    <div class="header-controls">
+      <div class="segmented lang-switch" role="group" aria-label="Language">
+        <button type="button" class="seg-btn is-active" data-lang="zh">华语</button>
+        <button type="button" class="seg-btn" data-lang="en">English</button>
+      </div>
+
+      <button type="button" class="theme-toggle" id="themeToggle"
+              aria-label="Toggle theme" title="Toggle theme">
+        <!-- Moon shown in light mode (click → go dark) -->
+        <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+        </svg>
+        <!-- Sun shown in dark mode (click → go light) -->
+        <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>
+        </svg>
+      </button>
     </div>
   </header>
 
@@ -624,7 +703,10 @@ const I18N = {
     month_label: "达标所需时间",
     time_unit_months: "个月",
     time_sub_weeks: "约 {weeks} 周",
-    time_ok: "已达标，保持即可"
+    time_ok: "已达标，保持即可",
+
+    theme_light: "切换到浅色模式",
+    theme_dark:  "切换到深色模式"
   },
   en: {
     title: "Smart Health Analyzer",
@@ -661,14 +743,18 @@ const I18N = {
     month_label: "Time to Goal",
     time_unit_months: "months",
     time_sub_weeks: "≈ {weeks} weeks",
-    time_ok: "On target — keep it up"
+    time_ok: "On target — keep it up",
+
+    theme_light: "Switch to light mode",
+    theme_dark:  "Switch to dark mode"
   }
 };
 
 /* =========================================================
    State & elements
    ========================================================= */
-const state = { lang: 'zh' };
+const THEME_KEY = 'sha-theme';
+const state = { lang: 'zh', theme: 'light' };
 let lastResult = null;
 
 const $ = (sel) => document.querySelector(sel);
@@ -696,8 +782,35 @@ const el = {
   timeCard:  $('#timeCard'),
   timeValue: $('#timeValue'),
   timeUnit:  $('#timeUnit'),
-  timeSub:   $('#timeSub')
+  timeSub:   $('#timeSub'),
+  themeToggle: $('#themeToggle')
 };
+
+/* =========================================================
+   Theme — single toggle between light & dark
+   ========================================================= */
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', state.theme);
+
+  const t = I18N[state.lang];
+  const label = state.theme === 'dark' ? t.theme_light : t.theme_dark;
+  el.themeToggle.setAttribute('aria-label', label);
+  el.themeToggle.setAttribute('title', label);
+  el.themeToggle.setAttribute('aria-pressed', String(state.theme === 'dark'));
+}
+
+function toggleTheme() {
+  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+  try { localStorage.setItem(THEME_KEY, state.theme); } catch (e) {}
+  applyTheme();
+}
+
+function loadThemePreference() {
+  // The inline <head> script already set data-theme; read it back here.
+  const current = document.documentElement.getAttribute('data-theme');
+  state.theme = current === 'dark' ? 'dark' : 'light';
+  applyTheme();
+}
 
 /* =========================================================
    i18n
@@ -719,6 +832,9 @@ function applyI18n() {
   document.querySelectorAll('.lang-switch .seg-btn').forEach(btn => {
     btn.classList.toggle('is-active', btn.dataset.lang === state.lang);
   });
+
+  // Refresh theme button label for the current language
+  applyTheme();
 }
 
 function setLang(lang) {
@@ -905,6 +1021,8 @@ document.querySelectorAll('.lang-switch .seg-btn').forEach(btn => {
   btn.addEventListener('click', () => setLang(btn.dataset.lang));
 });
 
+el.themeToggle.addEventListener('click', toggleTheme);
+
 /* clear invalid state while typing */
 [el.height, el.weight, el.bodyfat, el.muscle].forEach(input => {
   input.addEventListener('input', () => {
@@ -916,6 +1034,7 @@ document.querySelectorAll('.lang-switch .seg-btn').forEach(btn => {
 /* =========================================================
    Boot
    ========================================================= */
+loadThemePreference();
 applyI18n();
 </script>
 </body>
