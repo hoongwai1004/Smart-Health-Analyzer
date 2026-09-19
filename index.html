@@ -2,1985 +2,320 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="color-scheme" content="light dark">
 <meta name="description" content="输入身高、体重、体脂率与肌肉量，快速评估体重状态与达标时间。">
-<meta name="theme-color" content="#eef1f6" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#10b981">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Health">
 <meta name="format-detection" content="telephone=no">
+<link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2334d399'/%3E%3Cstop offset='1' stop-color='%23059669'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='url(%23g)'/%3E%3Cpath d='M256 384c-8 0-15-3-21-9l-96-96c-30-30-30-78 0-108s78-30 108 0l9 9 9-9c30-30 78-30 108 0s30 78 0 108l-96 96c-6 6-13 9-21 9z' fill='%23ffffff' opacity='.95'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2334d399'/%3E%3Cstop offset='1' stop-color='%23059669'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='url(%23g)'/%3E%3Cpath d='M256 384c-8 0-15-3-21-9l-96-96c-30-30-30-78 0-108s78-30 108 0l9 9 9-9c30-30 78-30 108 0s30 78 0 108l-96 96c-6 6-13 9-21 9z' fill='%23ffffff' opacity='.95'/%3E%3C/svg%3E">
 <title>智能健康分析助手 · Smart Health Analyzer</title>
-
-<link rel="manifest" id="manifestLink">
-<link rel="apple-touch-icon" id="appleIcon">
-
 <script>
-(() => {
-  const KEY = 'sha-theme';
-  let theme;
-  try {
-    const saved = localStorage.getItem(KEY);
-    theme = saved === 'light' || saved === 'dark'
-      ? saved
-      : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  } catch { theme = 'light'; }
-  document.documentElement.dataset.theme = theme;
-})();
+(()=>{let t='light';try{const s=localStorage.getItem('sha-theme');t=s==='light'||s==='dark'?s:matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}catch{}document.documentElement.dataset.theme=t})();
 </script>
-
 <style>
-@layer reset, tokens, base, shell, components, results, responsive;
-
-@layer reset {
-  *, *::before, *::after { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
-  body, h1, p { margin: 0; }
-  button, input { font: inherit; color: inherit; }
-  button { background: none; border: 0; padding: 0; cursor: pointer; }
-  input { border: 0; background: none; }
-  input[type="number"] { -moz-appearance: textfield; }
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-  svg { display: block; }
-  ul { list-style: none; padding: 0; margin: 0; }
+@layer base,ui,resp;
+@layer base{
+:root{color-scheme:light dark;--bg:light-dark(#eef1f6,#0b1220);--card:light-dark(#fff,#131c2b);--card2:light-dark(#f6f8fb,#1a2434);--line:light-dark(#e4e9f0,#26324a);--tx:light-dark(#0f172a,#e9eef7);--mut:light-dark(#64748b,#93a3b8);--nav:light-dark(rgba(255,255,255,.88),rgba(19,28,43,.92));--br:light-dark(#10b981,#34d399);--brS:light-dark(#10b981,#059669);--brI:light-dark(#047857,#6ee7b7);--brSf:light-dark(#e8f8f1,#0c2b22);--brR:light-dark(rgba(16,185,129,.18),rgba(52,211,153,.2));--brG:light-dark(rgba(16,185,129,.35),rgba(5,150,105,.45));--dg:light-dark(#ef4444,#f87171);--dgI:light-dark(#b91c1c,#fca5a5);--dgSf:light-dark(#fee2e2,#3a1416);--dgR:light-dark(rgba(239,68,68,.15),rgba(248,113,113,.2));--inI:light-dark(#1d4ed8,#93c5fd);--inSf:light-dark(#dbeafe,#13233d);--viI:light-dark(#6d28d9,#c4b5fd);--viSf:light-dark(#ede9fe,#241a3d);--amI:light-dark(#b45309,#fcd34d);--amSf:light-dark(#fef3c7,#3a2a0a);--cyI:light-dark(#0e7490,#67e8f9);--cySf:light-dark(#cffafe,#0a2b33);--sh:0 1px 2px light-dark(rgba(15,23,42,.04),rgba(0,0,0,.4)),0 10px 30px -14px light-dark(rgba(15,23,42,.22),rgba(0,0,0,.7));--st:env(safe-area-inset-top,0);--sb:env(safe-area-inset-bottom,0);--sl:env(safe-area-inset-left,0);--sr:env(safe-area-inset-right,0);--ab:56px;--tb:60px;--rL:20px;--rM:14px;--rS:11px;--ez:cubic-bezier(.22,1,.36,1);--tr:background .25s ease,border-color .25s ease,color .25s ease,box-shadow .25s ease;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}body,h1,p{margin:0}
+button,input{font:inherit;color:inherit}button{background:none;border:0;padding:0;cursor:pointer}input{border:0;background:none}input[type=number]{-moz-appearance:textfield}input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+svg{display:block}
+[hidden]{display:none!important}html,body{height:100%;overscroll-behavior-y:none}
+body{background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;transition:var(--tr);overflow:hidden}
+:focus-visible{outline:none;box-shadow:0 0 0 3px var(--brR);border-radius:var(--rS)}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 }
-
-@layer tokens {
-  :root {
-    color-scheme: light dark;
-    --bg:      light-dark(#eef1f6, #0b1220);
-    --card:    light-dark(#ffffff, #131c2b);
-    --card-2:  light-dark(#f6f8fb, #1a2434);
-    --line:    light-dark(#e4e9f0, #26324a);
-    --text:    light-dark(#0f172a, #e9eef7);
-    --muted:   light-dark(#64748b, #93a3b8);
-    --nav-bg:  light-dark(rgb(255 255 255 / .88), rgb(19 28 43 / .92));
-
-    --brand:       light-dark(#10b981, #34d399);
-    --brand-solid: light-dark(#10b981, #059669);
-    --brand-ink:   light-dark(#047857, #6ee7b7);
-    --brand-soft:  light-dark(#e8f8f1, #0c2b22);
-    --brand-ring:  light-dark(rgb(16 185 129 / .18), rgb(52 211 153 / .20));
-    --brand-glow:  light-dark(rgb(16 185 129 / .35), rgb(5 150 105 / .45));
-
-    --danger:      light-dark(#ef4444, #f87171);
-    --danger-ink:  light-dark(#b91c1c, #fca5a5);
-    --danger-soft: light-dark(#fee2e2, #3a1416);
-    --danger-ring: light-dark(rgb(239 68 68 / .15), rgb(248 113 113 / .20));
-
-    --info-ink:    light-dark(#1d4ed8, #93c5fd);
-    --info-soft:   light-dark(#dbeafe, #13233d);
-    --violet-ink:  light-dark(#6d28d9, #c4b5fd);
-    --violet-soft: light-dark(#ede9fe, #241a3d);
-    --amber-ink:   light-dark(#b45309, #fcd34d);
-    --amber-soft:  light-dark(#fef3c7, #3a2a0a);
-    --cyan-ink:    light-dark(#0e7490, #67e8f9);
-    --cyan-soft:   light-dark(#cffafe, #0a2b33);
-
-    --shadow: 0 1px 2px light-dark(rgb(15 23 42 / .04), rgb(0 0 0 / .40)),
-              0 10px 30px -14px light-dark(rgb(15 23 42 / .22), rgb(0 0 0 / .70));
-
-    --safe-t: env(safe-area-inset-top, 0px);
-    --safe-b: env(safe-area-inset-bottom, 0px);
-    --safe-l: env(safe-area-inset-left, 0px);
-    --safe-r: env(safe-area-inset-right, 0px);
-    --app-bar-h: 56px;
-    --tab-bar-h: 60px;
-    --r-lg: 20px; --r-md: 14px; --r-sm: 11px;
-    --ease: cubic-bezier(.22, 1, .36, 1);
-    --transition: background .25s ease, border-color .25s ease,
-                  color .25s ease, box-shadow .25s ease;
-  }
-  :root[data-theme="light"] { color-scheme: light; }
-  :root[data-theme="dark"]  { color-scheme: dark; }
+@layer ui{
+.app{display:grid;grid-template-rows:auto 1fr auto;height:100dvh;max-width:520px;margin:0 auto;background:var(--bg)}
+.bar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;height:calc(var(--ab) + var(--st));padding:var(--st) calc(16px + var(--sr)) 0 calc(16px + var(--sl));background:var(--nav);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line);transition:border-color .25s,box-shadow .25s}
+.bar.sc{box-shadow:0 4px 16px -12px rgba(0,0,0,.5)}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.bmark{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:10px;color:#fff;background:linear-gradient(140deg,#34d399,#059669);box-shadow:0 4px 10px -4px var(--brG)}
+.bmark svg{width:17px;height:17px}
+.btitle{display:flex;flex-direction:column;min-width:0;line-height:1.2}
+.btitle strong{font-size:15.5px;font-weight:800;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btitle small{font-size:11px;font-weight:600;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bacts{display:flex;gap:6px;align-items:center}
+.ibtn{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;color:var(--mut);transition:background .18s,color .18s,transform .12s}
+.ibtn:hover{color:var(--brI);background:var(--brSf)}.ibtn:active{transform:scale(.92)}
+.ibtn svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.isun{display:none}:root[data-theme=dark] .isun{display:block}:root[data-theme=dark] .imoon{display:none}
+.body{position:relative;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:none}
+.body::-webkit-scrollbar{display:none}
+.view{padding:16px calc(16px + var(--sr)) 24px calc(16px + var(--sl));animation:vi .28s var(--ez)}
+@keyframes vi{from{opacity:0;translate:0 6px}to{opacity:1;translate:0 0}}
+.tabs{position:sticky;bottom:0;z-index:30;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;height:calc(var(--tb) + var(--sb));padding:0 calc(8px + var(--sr)) var(--sb) calc(8px + var(--sl));background:var(--nav);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-top:1px solid var(--line)}
+.tab{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--mut);font-size:10.5px;font-weight:700;transition:color .18s}
+.tab svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;transition:transform .18s var(--ez)}
+.tab:active svg{transform:scale(.88)}
+.tab.on{color:var(--brI)}.tab.on svg{stroke-width:2.3}
+.bdg{position:absolute;top:8px;left:50%;translate:10px 0;width:7px;height:7px;border-radius:50%;background:var(--br);box-shadow:0 0 0 2px var(--nav)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--rL);box-shadow:var(--sh);padding:18px;transition:var(--tr)}
+.form{display:flex;flex-direction:column;gap:16px}
+.fh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:2px}
+.fh h2{font-size:17px;font-weight:800;letter-spacing:-.01em}.fh span{font-size:11.5px;font-weight:600;color:var(--mut)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fld{display:flex;flex-direction:column;gap:7px;min-width:0}
+.flbl{display:flex;align-items:baseline;gap:6px;font-size:13px;font-weight:700;color:var(--tx)}
+.hint{font-size:11px;font-weight:600;color:var(--mut);opacity:.85}
+.iw{position:relative;display:flex;align-items:center}
+.iw input{width:100%;min-width:0;padding:13px 44px 13px 14px;font-size:17px;font-weight:700;letter-spacing:-.01em;color:var(--tx);background:var(--card2);border:1.5px solid var(--line);border-radius:var(--rS);transition:var(--tr)}
+.iw input::placeholder{font-weight:500;color:var(--mut);opacity:.7}
+.iw input:focus{outline:none;background:var(--card);border-color:var(--br);box-shadow:0 0 0 4px var(--brR)}
+.iw input.bad{border-color:var(--dg);box-shadow:0 0 0 4px var(--dgR)}
+.un{position:absolute;right:14px;font-size:12.5px;font-weight:700;color:var(--mut);pointer-events:none}
+.err{margin:0;padding:11px 13px;font-size:13px;font-weight:600;line-height:1.45;color:var(--dgI);background:var(--dgSf);border-radius:var(--rS)}
+.seg{display:flex;gap:4px;padding:4px;background:var(--card2);border:1px solid var(--line);border-radius:var(--rM);transition:var(--tr)}
+.segb{position:relative;flex:1 1 0;display:inline-flex;align-items:center;justify-content:center;padding:10px 12px;border-radius:10px;color:var(--mut);font-size:14px;font-weight:700;transition:background .18s,color .18s,box-shadow .18s}
+.segb input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
+.segb:hover{color:var(--tx)}
+.segb.on,.segb:has(input:checked){background:var(--brSf);color:var(--brI);box-shadow:inset 0 0 0 1.5px var(--br)}
+.acts{display:flex;flex-direction:column;gap:10px;margin-top:2px}
+.btn{width:100%;padding:15px 18px;border:1.5px solid transparent;border-radius:var(--rS);font-size:16px;font-weight:800;letter-spacing:.01em;transition:transform .16s,background .18s,box-shadow .18s,color .18s,border-color .18s,filter .18s}
+.btn:active{transform:translateY(1px) scale(.995)}
+.bp{background:var(--brS);color:#fff;box-shadow:0 8px 20px -10px var(--brG)}
+.bp:hover{filter:brightness(1.07);box-shadow:0 12px 24px -10px var(--brG)}
+.bp:active{filter:brightness(.95)}
+.bg{background:transparent;color:var(--mut);border-color:var(--line)}
+.bg:hover{color:var(--dgI);border-color:var(--dg);background:var(--dgSf)}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:56px 24px;color:var(--mut)}
+.empty svg{width:38px;height:38px;opacity:.45}
+.empty p{font-size:13.5px;font-weight:600;line-height:1.55;max-width:240px;text-wrap:pretty}
+.rstk{display:flex;flex-direction:column;gap:12px}
+.sbar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.shint{flex-basis:100%;display:flex;align-items:center;gap:5px;margin-bottom:2px;font-size:11.5px;font-weight:700;color:var(--mut)}
+.shint svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;opacity:.8}
+.chip{display:inline-flex;align-items:center;gap:5px;min-height:38px;padding:8px 12px;border-radius:999px;background:var(--card);border:1.5px solid var(--line);font-size:13px;font-weight:700;color:var(--tx);cursor:pointer;user-select:none;font-variant-numeric:tabular-nums;-webkit-tap-highlight-color:transparent;transition:background .15s,border-color .15s,color .15s,transform .12s,box-shadow .15s}
+.chip:hover,.chip:focus-visible{border-color:var(--br);background:var(--brSf)}
+.chip:active{transform:scale(.97)}
+.chip::after{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--br);opacity:.55;margin-left:2px;transition:opacity .15s}
+.chip:hover::after,.chip:focus-visible::after{opacity:1}
+.chip.edit{flex-basis:100%;display:block;padding:0;border-radius:var(--rM);cursor:default;background:var(--card);border:1.5px solid var(--br);box-shadow:0 0 0 4px var(--brR);animation:co .22s var(--ez)}
+.chip.edit:hover{background:var(--card)}.chip.edit:active{transform:none}.chip.edit::after{display:none}
+@keyframes co{from{opacity:.4;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
+.ci{font-size:14px;line-height:1;color:var(--brI)}
+.cl{font-size:11px;font-weight:800;letter-spacing:.02em;color:var(--mut);text-transform:uppercase}
+.cv{font-size:13.5px;font-weight:800;color:var(--tx)}
+.cu{font-size:11px;font-weight:700;color:var(--mut);margin-left:-1px}
+.chip.act{background:transparent;border-style:dashed;color:var(--mut);padding-inline:11px}
+.chip.act svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.chip.act::after{display:none}
+.ed{display:flex;flex-direction:column;gap:12px;padding:14px}
+.edh{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.edl{font-size:14px;font-weight:800;color:var(--tx);letter-spacing:-.01em}
+.edr{font-size:11.5px;font-weight:700;color:var(--mut);font-variant-numeric:tabular-nums}
+.edf{display:grid;grid-template-columns:auto 1fr auto auto;align-items:stretch;gap:6px;background:var(--card2);border:1.5px solid var(--line);border-radius:var(--rS);padding:4px;transition:var(--tr)}
+.edf:focus-within{border-color:var(--br);background:var(--card);box-shadow:0 0 0 3px var(--brR)}
+.eds{display:grid;place-items:center;width:42px;border-radius:9px;color:var(--mut);font-size:22px;font-weight:700;line-height:1;user-select:none;transition:background .15s,color .15s,transform .12s}
+.eds:hover{background:var(--card);color:var(--brI)}.eds:active{transform:scale(.92)}
+.edi{width:100%;min-width:0;padding:10px 8px;background:transparent;border:0;font-size:22px;font-weight:800;letter-spacing:-.02em;text-align:center;color:var(--tx);font-variant-numeric:tabular-nums;-moz-appearance:textfield}
+.edi:focus{outline:none}.edi.bad{color:var(--dgI)}
+.edu{display:grid;place-items:center;padding-inline:10px;font-size:13px;font-weight:700;color:var(--mut);user-select:none}
+.ede{margin:0;padding:8px 11px;border-radius:9px;background:var(--dgSf);color:var(--dgI);font-size:12.5px;font-weight:700;line-height:1.4}
+.eda{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.edb{padding:12px 14px;border-radius:var(--rS);font-size:14px;font-weight:800;letter-spacing:.01em;-webkit-tap-highlight-color:transparent;transition:background .15s,color .15s,transform .12s,filter .15s}
+.edb:active{transform:scale(.97)}
+.edb.g{background:transparent;color:var(--mut);border:1.5px solid var(--line)}
+.edb.g:hover{color:var(--tx);border-color:var(--tx)}
+.edb.p{background:var(--brS);color:#fff;box-shadow:0 6px 14px -8px var(--brG)}
+.edb.p:hover{filter:brightness(1.07)}.edb.p:active{filter:brightness(.95)}
+.bh{padding:18px;border-radius:var(--rL);border:1px solid transparent;transition:background .3s,color .3s}
+.bh[data-cat=under]{background:var(--cySf);color:var(--cyI)}
+.bh[data-cat=normal]{background:var(--brSf);color:var(--brI)}
+.bh[data-cat=over]{background:var(--amSf);color:var(--amI)}
+.bh[data-cat=obese]{background:var(--dgSf);color:var(--dgI)}
+.bhh{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:16px}
+.bhl{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.85}
+.bhn{font-size:46px;font-weight:900;line-height:1;letter-spacing:-.045em;font-variant-numeric:tabular-nums}
+.bhc{display:flex;flex-direction:column;align-items:flex-end;gap:2px;text-align:right;padding-bottom:4px}
+.bhc strong{font-size:17px;font-weight:800;letter-spacing:-.015em}
+.bhc span{font-size:11.5px;font-weight:700;opacity:.8;font-variant-numeric:tabular-nums}
+.bst{position:relative;display:flex;height:9px;border-radius:999px}
+.bss{height:100%}.bss:first-child{border-radius:999px 0 0 999px}.bss:last-child{border-radius:0 999px 999px 0}
+.bss.u{flex:4.5;background:var(--cyI);opacity:.38}.bss.n{flex:6.5;background:var(--brI);opacity:.55}.bss.o{flex:5;background:var(--amI);opacity:.5}.bss.b{flex:10;background:var(--dgI);opacity:.48}
+.bsm{position:absolute;top:50%;left:50%;width:16px;height:16px;border-radius:50%;background:currentColor;border:3px solid var(--card);translate:-50% -50%;box-shadow:0 2px 8px rgba(0,0,0,.28);z-index:2;transition:left .6s var(--ez)}
+.bsl{display:flex;margin-top:8px;font-size:10.5px;font-weight:800;opacity:.82}
+.bsl span{text-align:center;white-space:nowrap;overflow:hidden}
+.bsl span:nth-child(1){flex:4.5}.bsl span:nth-child(2){flex:6.5}.bsl span:nth-child(3){flex:5}.bsl span:nth-child(4){flex:10}
+.sts{display:flex;align-items:center;gap:13px;padding:15px;border-radius:var(--rL);border:1.5px solid transparent;transition:var(--tr)}
+.sts[data-s=lose]{background:var(--dgSf);color:var(--dgI);border-color:var(--dgR)}
+.sts[data-s=gain]{background:var(--inSf);color:var(--inI)}
+.sts[data-s=ok]{background:var(--brSf);color:var(--brI);border-color:var(--brR)}
+.sti{flex:none;display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:currentColor}
+.sti svg{width:19px;height:19px;stroke:var(--card);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.sti path{display:none}
+.sts[data-s=lose] .il,.sts[data-s=gain] .ig,.sts[data-s=ok] .io{display:block}
+.stt{display:flex;flex-direction:column;gap:3px;min-width:0}
+.stt strong{font-size:16.5px;font-weight:800;letter-spacing:-.01em}
+.stt span{font-size:12.5px;font-weight:600;opacity:.9;line-height:1.4}
+.rh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
+.rt{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--mut)}
+.rc{font-size:13.5px;font-weight:800;font-variant-numeric:tabular-nums}
+.rtk{position:relative;height:10px;border-radius:999px;background:var(--card2);border:1px solid var(--line);transition:var(--tr)}
+.rb{position:absolute;top:0;bottom:0;border-radius:999px;background:var(--br);opacity:.32}
+.rm{position:absolute;top:50%;left:50%;width:18px;height:18px;border-radius:50%;background:var(--card);border:3.5px solid var(--br);translate:-50% -50%;box-shadow:0 2px 8px rgba(0,0,0,.18);transition:left .55s var(--ez)}
+.rs{display:flex;justify-content:space-between;margin-top:8px;font-size:11.5px;font-weight:700;color:var(--mut);font-variant-numeric:tabular-nums}
+.mt{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.m{display:flex;flex-direction:column;gap:5px;padding:14px;border-radius:var(--rM);background:var(--card2);border:1.5px solid var(--line);min-width:0;transition:var(--tr)}
+.m.w{grid-column:span 2}
+.m.v{background:var(--viSf);border-color:transparent}.m.v .ml,.m.v .mv{color:var(--viI)}
+.m.c{background:var(--cySf);border-color:transparent}.m.c .ml,.m.c .mv{color:var(--cyI)}
+.m.a{background:var(--amSf);border-color:transparent}.m.a .ml,.m.a .mv{color:var(--amI)}
+#tc[data-s=lose]{background:var(--dgSf);border-color:transparent}#tc[data-s=lose] .ml,#tc[data-s=lose] .mv{color:var(--dgI)}
+#tc[data-s=gain]{background:var(--inSf);border-color:transparent}#tc[data-s=gain] .ml,#tc[data-s=gain] .mv{color:var(--inI)}
+#tc[data-s=ok]{background:var(--brSf);border-color:transparent}#tc[data-s=ok] .ml,#tc[data-s=ok] .mv{color:var(--brI)}
+.ml{font-size:11.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--mut)}
+.mv{display:flex;align-items:baseline;flex-wrap:wrap;gap:3px;font-size:26px;font-weight:900;line-height:1.05;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.mu{font-size:13px;font-weight:700;opacity:.6}
+.ms{margin-top:1px;font-size:11.5px;font-weight:700;opacity:.72}
+.m.pulse{animation:pm .6s var(--ez)}
+@keyframes pm{0%{transform:scale(1)}40%{transform:scale(1.02)}100%{transform:scale(1)}}
 }
-
-@layer base {
-  [hidden] { display: none !important; }
-  html, body { block-size: 100%; overscroll-behavior-y: none; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-                 "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
-    background: var(--bg); color: var(--text);
-    -webkit-font-smoothing: antialiased;
-    -webkit-tap-highlight-color: transparent;
-    transition: var(--transition);
-    overflow: hidden;
-  }
-  :focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px var(--brand-ring);
-    border-radius: var(--r-sm);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: .001ms !important;
-      transition-duration: .001ms !important;
-    }
-  }
-}
-
-@layer shell {
-  .app-shell {
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    block-size: 100dvh;
-    max-inline-size: 520px;
-    margin-inline: auto;
-    background: var(--bg);
-  }
-
-  .app-bar {
-    position: sticky; top: 0; z-index: 30;
-    display: flex; align-items: center; gap: 12px;
-    block-size: calc(var(--app-bar-h) + var(--safe-t));
-    padding: var(--safe-t) calc(16px + var(--safe-r)) 0 calc(16px + var(--safe-l));
-    background: var(--nav-bg);
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    border-bottom: 1px solid var(--line);
-    transition: border-color .25s ease, box-shadow .25s ease;
-    &.is-scrolled { box-shadow: 0 4px 16px -12px rgb(0 0 0 / .5); }
-  }
-
-  .app-bar__brand {
-    display: flex; align-items: center; gap: 10px;
-    min-inline-size: 0; flex: 1;
-  }
-
-  .app-bar__mark {
-    flex: none; display: grid; place-items: center;
-    inline-size: 32px; block-size: 32px; border-radius: 10px;
-    color: #fff;
-    background: linear-gradient(140deg, #34d399, #059669);
-    box-shadow: 0 4px 10px -4px var(--brand-glow);
-    & svg { inline-size: 17px; block-size: 17px; }
-  }
-
-  .app-bar__title {
-    display: flex; flex-direction: column; min-inline-size: 0; line-height: 1.2;
-    & strong {
-      font-size: 15.5px; font-weight: 800; letter-spacing: -.01em;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    & small {
-      font-size: 11px; font-weight: 600; color: var(--muted);
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-  }
-
-  .app-bar__actions { display: flex; gap: 6px; align-items: center; }
-
-  .icon-btn {
-    display: grid; place-items: center;
-    inline-size: 40px; block-size: 40px; border-radius: 12px;
-    color: var(--muted);
-    transition: background .18s ease, color .18s ease, transform .12s ease;
-    &:hover { color: var(--brand-ink); background: var(--brand-soft); }
-    &:active { transform: scale(.92); }
-    & svg {
-      inline-size: 19px; block-size: 19px;
-      fill: none; stroke: currentColor;
-      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-    }
-  }
-
-  .icon-sun { display: none; }
-  :root[data-theme="dark"] {
-    & .icon-sun  { display: block; }
-    & .icon-moon { display: none; }
-  }
-
-  .app-body {
-    position: relative;
-    overflow-y: auto; overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-    scrollbar-width: none;
-    &::-webkit-scrollbar { display: none; }
-  }
-
-  .view {
-    padding: 16px calc(16px + var(--safe-r)) 24px calc(16px + var(--safe-l));
-    animation: view-in .28s var(--ease);
-  }
-  .view--input { padding-block-end: 32px; }
-  .view--results { padding-block-end: 24px; }
-
-  @keyframes view-in {
-    from { opacity: 0; translate: 0 6px; }
-    to   { opacity: 1; translate: 0 0; }
-  }
-
-  .tab-bar {
-    position: sticky; bottom: 0; z-index: 30;
-    display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
-    block-size: calc(var(--tab-bar-h) + var(--safe-b));
-    padding: 0 calc(8px + var(--safe-r)) var(--safe-b) calc(8px + var(--safe-l));
-    background: var(--nav-bg);
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    border-top: 1px solid var(--line);
-  }
-
-  .tab {
-    position: relative;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 3px; color: var(--muted);
-    font-size: 10.5px; font-weight: 700; letter-spacing: .01em;
-    transition: color .18s ease;
-    & svg {
-      inline-size: 22px; block-size: 22px;
-      fill: none; stroke: currentColor;
-      stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round;
-      transition: transform .18s var(--ease);
-    }
-    &:active svg { transform: scale(.88); }
-    &.is-active {
-      color: var(--brand-ink);
-      & svg { stroke-width: 2.3; }
-    }
-  }
-
-  .tab__badge {
-    position: absolute;
-    inset-block-start: 8px; inset-inline-start: 50%;
-    translate: 10px 0;
-    inline-size: 7px; block-size: 7px; border-radius: 50%;
-    background: var(--brand);
-    box-shadow: 0 0 0 2px var(--nav-bg);
-  }
-}
-
-@layer components {
-  .card {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--r-lg);
-    box-shadow: var(--shadow);
-    padding: 18px;
-    transition: var(--transition);
-  }
-
-  .install-banner {
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: 14px; padding: 12px 14px;
-    border-radius: var(--r-md);
-    background: var(--brand-soft); color: var(--brand-ink);
-    border: 1.5px solid var(--brand-ring);
-    animation: view-in .3s var(--ease);
-    & svg { inline-size: 20px; block-size: 20px; flex: none;
-            fill: none; stroke: currentColor; stroke-width: 2;
-            stroke-linecap: round; stroke-linejoin: round; }
-    & p { flex: 1; margin: 0; font-size: 12.5px; font-weight: 700; line-height: 1.35; }
-    & button.install-go {
-      padding: 8px 14px; border-radius: 999px;
-      background: var(--brand-solid); color: #fff;
-      font-size: 12.5px; font-weight: 800;
-      transition: filter .18s ease, transform .12s ease;
-      &:active { transform: scale(.95); }
-    }
-    & button.install-x {
-      display: grid; place-items: center;
-      inline-size: 24px; block-size: 24px; border-radius: 50%;
-      color: currentColor; opacity: .7;
-      &:hover { background: rgb(0 0 0 / .06); opacity: 1; }
-      & svg { inline-size: 14px; block-size: 14px; stroke-width: 2.4; }
-    }
-  }
-
-  .form { display: flex; flex-direction: column; gap: 16px; }
-
-  .form-header {
-    display: flex; align-items: baseline; justify-content: space-between;
-    gap: 10px; margin-bottom: 2px;
-    & h2 { font-size: 17px; font-weight: 800; letter-spacing: -.01em; }
-    & span { font-size: 11.5px; font-weight: 600; color: var(--muted); }
-  }
-
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .field { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
-
-  .field-label {
-    display: flex; align-items: baseline; gap: 6px;
-    font-size: 13px; font-weight: 700; color: var(--text);
-  }
-  .hint { font-size: 11px; font-weight: 600; color: var(--muted); opacity: .85; }
-
-  .input-wrap {
-    position: relative; display: flex; align-items: center;
-    & input {
-      inline-size: 100%; min-width: 0;
-      padding: 13px 44px 13px 14px;
-      font-size: 17px; font-weight: 700; letter-spacing: -.01em;
-      color: var(--text); background: var(--card-2);
-      border: 1.5px solid var(--line); border-radius: var(--r-sm);
-      transition: var(--transition);
-      &::placeholder { font-weight: 500; color: var(--muted); opacity: .7; }
-      &:focus {
-        outline: none; background: var(--card);
-        border-color: var(--brand);
-        box-shadow: 0 0 0 4px var(--brand-ring);
-      }
-      &.is-invalid {
-        border-color: var(--danger);
-        box-shadow: 0 0 0 4px var(--danger-ring);
-      }
-    }
-  }
-
-  .unit {
-    position: absolute; right: 14px;
-    font-size: 12.5px; font-weight: 700; color: var(--muted);
-    pointer-events: none;
-  }
-
-  .form-error {
-    margin: 0; padding: 11px 13px;
-    font-size: 13px; font-weight: 600; line-height: 1.45;
-    color: var(--danger-ink); background: var(--danger-soft);
-    border-radius: var(--r-sm);
-  }
-
-  .segmented {
-    display: flex; gap: 4px; padding: 4px;
-    background: var(--card-2);
-    border: 1px solid var(--line);
-    border-radius: var(--r-md);
-    transition: var(--transition);
-  }
-
-  .seg-btn {
-    position: relative; flex: 1 1 0;
-    display: inline-flex; align-items: center; justify-content: center;
-    padding: 10px 12px; border-radius: 10px;
-    color: var(--muted); font-size: 14px; font-weight: 700;
-    transition: background .18s ease, color .18s ease, box-shadow .18s ease;
-    & input { position: absolute; opacity: 0; inline-size: 0; block-size: 0; pointer-events: none; }
-    &:hover { color: var(--text); }
-    &.is-active,
-    &:has(input:checked) {
-      background: var(--brand-soft);
-      color: var(--brand-ink);
-      box-shadow: inset 0 0 0 1.5px var(--brand);
-    }
-  }
-
-  .actions { display: flex; flex-direction: column; gap: 10px; margin-top: 2px; }
-
-  .btn {
-    inline-size: 100%; padding: 15px 18px;
-    border: 1.5px solid transparent; border-radius: var(--r-sm);
-    font-size: 16px; font-weight: 800; letter-spacing: .01em;
-    transition: transform .16s ease, background .18s ease, box-shadow .18s ease,
-                color .18s ease, border-color .18s ease, filter .18s ease;
-    &:active { transform: translateY(1px) scale(.995); }
-  }
-
-  .btn-primary {
-    background: var(--brand-solid); color: #fff;
-    box-shadow: 0 8px 20px -10px var(--brand-glow);
-    &:hover { filter: brightness(1.07); box-shadow: 0 12px 24px -10px var(--brand-glow); }
-    &:active { filter: brightness(.95); }
-  }
-
-  .btn-ghost {
-    background: transparent; color: var(--muted); border-color: var(--line);
-    &:hover { color: var(--danger-ink); border-color: var(--danger); background: var(--danger-soft); }
-  }
-
-  .empty-panel {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 12px; text-align: center; padding: 56px 24px; color: var(--muted);
-    & svg { inline-size: 38px; block-size: 38px; opacity: .45; }
-    & p {
-      font-size: 13.5px; font-weight: 600; line-height: 1.55;
-      max-inline-size: 240px; text-wrap: pretty;
-    }
-  }
-}
-
-@layer results {
-  .result-stack { display: flex; flex-direction: column; gap: 12px; }
-
-  /* ---------- Summary bar (no share) ---------- */
-  .summary-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 12px;
-  }
-
-  .summary-hint {
-    flex-basis: 100%;
-    display: flex; align-items: center; gap: 5px;
-    margin-bottom: 2px;
-    font-size: 11.5px; font-weight: 700;
-    color: var(--muted);
-    letter-spacing: .01em;
-    & svg {
-      inline-size: 13px; block-size: 13px;
-      fill: none; stroke: currentColor;
-      stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
-      opacity: .8;
-    }
-  }
-
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    min-block-size: 38px;
-    padding: 8px 12px;
-    border-radius: 999px;
-    background: var(--card);
-    border: 1.5px solid var(--line);
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text);
-    cursor: pointer;
-    user-select: none;
-    font-variant-numeric: tabular-nums;
-    -webkit-tap-highlight-color: transparent;
-    transition: background .15s ease, border-color .15s ease,
-                color .15s ease, transform .12s ease, box-shadow .15s ease;
-
-    &:hover,
-    &:focus-visible {
-      border-color: var(--brand);
-      background: var(--brand-soft);
-    }
-    &:active { transform: scale(.97); }
-
-    &.chip--editing {
-      flex-basis: 100%;
-      display: block;
-      padding: 0;
-      border-radius: var(--r-md);
-      cursor: default;
-      background: var(--card);
-      border: 1.5px solid var(--brand);
-      box-shadow: 0 0 0 4px var(--brand-ring);
-      animation: chip-open .22s var(--ease);
-      &:hover { background: var(--card); }
-      &:active { transform: none; }
-    }
-
-    &.chip--action {
-      background: transparent;
-      border-style: dashed;
-      color: var(--muted);
-      padding-inline: 11px;
-      & svg {
-        inline-size: 13px; block-size: 13px;
-        fill: none; stroke: currentColor;
-        stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
-      }
-    }
-  }
-
-  @keyframes chip-open {
-    from { opacity: .4; transform: scale(.98); }
-    to   { opacity: 1; transform: scale(1); }
-  }
-
-  .chip__icon {
-    font-size: 14px;
-    line-height: 1;
-    color: var(--brand-ink);
-  }
-
-  .chip__label {
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: .02em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-
-  .chip__value {
-    font-size: 13.5px;
-    font-weight: 800;
-    color: var(--text);
-  }
-
-  .chip__unit {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--muted);
-    margin-inline-start: -1px;
-  }
-
-  .chip::after {
-    content: "";
-    display: inline-block;
-    inline-size: 5px; block-size: 5px;
-    border-radius: 50%;
-    background: var(--brand);
-    opacity: .55;
-    margin-inline-start: 2px;
-    transition: opacity .15s ease;
-  }
-  .chip:hover::after,
-  .chip:focus-visible::after { opacity: 1; }
-  .chip--editing::after { display: none; }
-  .chip--action::after { display: none; }
-
-  /* ---------- Inline editor ---------- */
-  .editor {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 14px;
-  }
-
-  .editor__head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 8px;
-  }
-
-  .editor__label {
-    font-size: 14px;
-    font-weight: 800;
-    color: var(--text);
-    letter-spacing: -.01em;
-  }
-
-  .editor__range {
-    font-size: 11.5px;
-    font-weight: 700;
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .editor__field {
-    display: grid;
-    grid-template-columns: auto 1fr auto auto;
-    align-items: stretch;
-    gap: 6px;
-    background: var(--card-2);
-    border: 1.5px solid var(--line);
-    border-radius: var(--r-sm);
-    padding: 4px;
-    transition: var(--transition);
-
-    &:focus-within {
-      border-color: var(--brand);
-      background: var(--card);
-      box-shadow: 0 0 0 3px var(--brand-ring);
-    }
-  }
-
-  .editor__step {
-    display: grid; place-items: center;
-    inline-size: 42px;
-    border-radius: 9px;
-    color: var(--muted);
-    font-size: 22px;
-    font-weight: 700;
-    line-height: 1;
-    user-select: none;
-    transition: background .15s ease, color .15s ease, transform .12s ease;
-
-    &:hover { background: var(--card); color: var(--brand-ink); }
-    &:active { transform: scale(.92); }
-  }
-
-  .editor__input {
-    inline-size: 100%;
-    min-inline-size: 0;
-    padding: 10px 8px;
-    background: transparent;
-    border: 0;
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: -.02em;
-    text-align: center;
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-    -moz-appearance: textfield;
-    &:focus { outline: none; }
-    &::-webkit-inner-spin-button,
-    &::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-    &.is-invalid { color: var(--danger-ink); }
-  }
-
-  .editor__unit {
-    display: grid; place-items: center;
-    padding-inline: 10px;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--muted);
-    user-select: none;
-  }
-
-  .editor__error {
-    margin: 0;
-    padding: 8px 11px;
-    border-radius: 9px;
-    background: var(--danger-soft);
-    color: var(--danger-ink);
-    font-size: 12.5px;
-    font-weight: 700;
-    line-height: 1.4;
-  }
-
-  .editor__actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-
-  .editor__btn {
-    padding: 12px 14px;
-    border-radius: var(--r-sm);
-    font-size: 14px;
-    font-weight: 800;
-    letter-spacing: .01em;
-    -webkit-tap-highlight-color: transparent;
-    transition: background .15s ease, color .15s ease,
-                transform .12s ease, filter .15s ease;
-    &:active { transform: scale(.97); }
-
-    &.editor__btn--ghost {
-      background: transparent;
-      color: var(--muted);
-      border: 1.5px solid var(--line);
-      &:hover { color: var(--text); border-color: var(--text); }
-    }
-    &.editor__btn--primary {
-      background: var(--brand-solid);
-      color: #fff;
-      box-shadow: 0 6px 14px -8px var(--brand-glow);
-      &:hover { filter: brightness(1.07); }
-      &:active { filter: brightness(.95); }
-    }
-  }
-
-  /* ---------- BMI hero ---------- */
-  .bmi-hero {
-    padding: 18px;
-    border-radius: var(--r-lg);
-    border: 1px solid transparent;
-    transition: background .3s ease, color .3s ease;
-    &[data-cat="under"]  { background: var(--cyan-soft);   color: var(--cyan-ink); }
-    &[data-cat="normal"] { background: var(--brand-soft);  color: var(--brand-ink); }
-    &[data-cat="over"]   { background: var(--amber-soft);  color: var(--amber-ink); }
-    &[data-cat="obese"]  { background: var(--danger-soft); color: var(--danger-ink); }
-  }
-
-  .bmi-hero-head {
-    display: flex; align-items: flex-end; justify-content: space-between;
-    gap: 14px; margin-bottom: 16px;
-  }
-
-  .bmi-hero-label {
-    font-size: 10.5px; font-weight: 800;
-    letter-spacing: .10em; text-transform: uppercase; opacity: .85;
-  }
-
-  .bmi-hero-number {
-    font-size: 46px; font-weight: 900; line-height: 1;
-    letter-spacing: -.045em; font-variant-numeric: tabular-nums;
-  }
-
-  .bmi-hero-cat {
-    display: flex; flex-direction: column; align-items: flex-end;
-    gap: 2px; text-align: right; padding-bottom: 4px;
-    & strong { font-size: 17px; font-weight: 800; letter-spacing: -.015em; }
-    & span {
-      font-size: 11.5px; font-weight: 700; opacity: .8;
-      font-variant-numeric: tabular-nums;
-    }
-  }
-
-  .bmi-scale-track {
-    position: relative; display: flex;
-    block-size: 9px; border-radius: 999px;
-  }
-
-  .bmi-seg {
-    block-size: 100%;
-    &:first-child { border-radius: 999px 0 0 999px; }
-    &:last-child  { border-radius: 0 999px 999px 0; }
-    &.bmi-seg--under  { flex: 4.5; background: var(--cyan-ink);   opacity: .38; }
-    &.bmi-seg--normal { flex: 6.5; background: var(--brand-ink);  opacity: .55; }
-    &.bmi-seg--over   { flex: 5;   background: var(--amber-ink);  opacity: .50; }
-    &.bmi-seg--obese  { flex: 10;  background: var(--danger-ink); opacity: .48; }
-  }
-
-  .bmi-scale-marker {
-    position: absolute;
-    inset-block-start: 50%; inset-inline-start: 50%;
-    inline-size: 16px; block-size: 16px; border-radius: 50%;
-    background: currentColor;
-    border: 3px solid var(--card);
-    translate: -50% -50%;
-    box-shadow: 0 2px 8px rgb(0 0 0 / .28);
-    z-index: 2;
-    transition: inset-inline-start .6s var(--ease);
-  }
-
-  .bmi-scale-labels {
-    display: flex; margin-top: 8px;
-    font-size: 10.5px; font-weight: 800; opacity: .82;
-    & span {
-      text-align: center; white-space: nowrap; overflow: hidden;
-      &:nth-child(1) { flex: 4.5; }
-      &:nth-child(2) { flex: 6.5; }
-      &:nth-child(3) { flex: 5; }
-      &:nth-child(4) { flex: 10; }
-    }
-  }
-
-  .status {
-    display: flex; align-items: center; gap: 13px;
-    padding: 15px;
-    border-radius: var(--r-lg);
-    border: 1.5px solid transparent;
-    transition: var(--transition);
-    &[data-state="lose"] { background: var(--danger-soft); color: var(--danger-ink); border-color: var(--danger-ring); }
-    &[data-state="gain"] { background: var(--info-soft);   color: var(--info-ink); }
-    &[data-state="ok"]   { background: var(--brand-soft);  color: var(--brand-ink); border-color: var(--brand-ring); }
-    &[data-state="lose"] .ico-lose,
-    &[data-state="gain"] .ico-gain,
-    &[data-state="ok"]   .ico-ok { display: block; }
-  }
-
-  .status-icon {
-    flex: none; display: grid; place-items: center;
-    inline-size: 38px; block-size: 38px; border-radius: 50%;
-    background: currentColor;
-    & svg {
-      inline-size: 19px; block-size: 19px;
-      stroke: var(--card); stroke-width: 2.6;
-      stroke-linecap: round; stroke-linejoin: round;
-      fill: none;
-    }
-    & path { display: none; }
-  }
-
-  .status-text {
-    display: flex; flex-direction: column; gap: 3px; min-width: 0;
-    & strong { font-size: 16.5px; font-weight: 800; letter-spacing: -.01em; }
-    & span   { font-size: 12.5px; font-weight: 600; opacity: .9; line-height: 1.4; }
-  }
-
-  .range-head {
-    display: flex; align-items: baseline; justify-content: space-between;
-    gap: 10px; margin-bottom: 10px;
-  }
-
-  .range-title {
-    font-size: 12px; font-weight: 800;
-    letter-spacing: .04em; text-transform: uppercase; color: var(--muted);
-  }
-
-  .range-current {
-    font-size: 13.5px; font-weight: 800;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .range-track {
-    position: relative; block-size: 10px; border-radius: 999px;
-    background: var(--card-2); border: 1px solid var(--line);
-    transition: var(--transition);
-  }
-
-  .range-band {
-    position: absolute; inset-block: 0;
-    border-radius: 999px;
-    background: var(--brand); opacity: .32;
-  }
-
-  .range-marker {
-    position: absolute;
-    inset-block-start: 50%; inset-inline-start: 50%;
-    inline-size: 18px; block-size: 18px; border-radius: 50%;
-    background: var(--card);
-    border: 3.5px solid var(--brand);
-    translate: -50% -50%;
-    box-shadow: 0 2px 8px rgb(0 0 0 / .18);
-    transition: inset-inline-start .55s var(--ease);
-  }
-
-  .range-scale {
-    display: flex; justify-content: space-between;
-    margin-top: 8px;
-    font-size: 11.5px; font-weight: 700; color: var(--muted);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-  .metric {
-    display: flex; flex-direction: column; gap: 5px;
-    padding: 14px;
-    border-radius: var(--r-md);
-    background: var(--card-2);
-    border: 1.5px solid var(--line);
-    min-width: 0;
-    transition: var(--transition);
-    &.metric--wide { grid-column: span 2; }
-    &.metric--violet {
-      background: var(--violet-soft); border-color: transparent;
-      & .metric-label, & .metric-value { color: var(--violet-ink); }
-    }
-    &.metric--cyan {
-      background: var(--cyan-soft); border-color: transparent;
-      & .metric-label, & .metric-value { color: var(--cyan-ink); }
-    }
-    &.metric--amber {
-      background: var(--amber-soft); border-color: transparent;
-      & .metric-label, & .metric-value { color: var(--amber-ink); }
-    }
-    &#timeCard {
-      &[data-state="lose"] {
-        background: var(--danger-soft); border-color: transparent;
-        & .metric-label, & .metric-value { color: var(--danger-ink); }
-      }
-      &[data-state="gain"] {
-        background: var(--info-soft); border-color: transparent;
-        & .metric-label, & .metric-value { color: var(--info-ink); }
-      }
-      &[data-state="ok"] {
-        background: var(--brand-soft); border-color: transparent;
-        & .metric-label, & .metric-value { color: var(--brand-ink); }
-      }
-    }
-  }
-
-  .metric-label {
-    font-size: 11.5px; font-weight: 800;
-    letter-spacing: .03em; text-transform: uppercase; color: var(--muted);
-  }
-
-  .metric-value {
-    display: flex; align-items: baseline; flex-wrap: wrap; gap: 3px;
-    font-size: 26px; font-weight: 900; line-height: 1.05;
-    letter-spacing: -.03em; font-variant-numeric: tabular-nums;
-  }
-
-  .metric-unit { font-size: 13px; font-weight: 700; opacity: .6; }
-
-  .metric-sub {
-    margin-top: 1px;
-    font-size: 11.5px; font-weight: 700; opacity: .72;
-  }
-
-  .metric.is-updating { animation: pulse-metric .6s var(--ease); }
-  @keyframes pulse-metric {
-    0%   { transform: scale(1); }
-    40%  { transform: scale(1.02); }
-    100% { transform: scale(1); }
-  }
-}
-
-@layer responsive {
-  @media (max-width: 359px) {
-    .grid-2 { grid-template-columns: 1fr; }
-    .metric-value { font-size: 23px; }
-    .bmi-hero-number { font-size: 40px; }
-    .bmi-hero-cat strong { font-size: 15.5px; }
-    .editor__input { font-size: 20px; }
-    .editor__step { inline-size: 38px; }
-  }
-
-  @media (min-width: 520px) {
-    .app-shell {
-      block-size: min(100dvh, 900px);
-      margin-block: max(0px, calc((100dvh - 900px) / 2));
-      border-inline: 1px solid var(--line);
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: 0 20px 60px -30px rgb(0 0 0 / .35);
-    }
-  }
+@layer resp{
+@media(max-width:359px){.g2{grid-template-columns:1fr}.mv{font-size:23px}.bhn{font-size:40px}.bhc strong{font-size:15.5px}.edi{font-size:20px}.eds{width:38px}}
+@media(min-width:520px){.app{height:min(100dvh,900px);margin-block:max(0px,calc((100dvh - 900px)/2));border-inline:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:0 20px 60px -30px rgba(0,0,0,.35)}}
 }
 </style>
 </head>
 <body>
-
-<div class="app-shell">
-
-  <header class="app-bar" id="appBar">
-    <div class="app-bar__brand">
-      <div class="app-bar__mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/>
-        </svg>
-      </div>
-      <div class="app-bar__title">
-        <strong data-i18n="title">智能健康分析助手</strong>
-        <small data-i18n="subtitle">输入数据，精准评估</small>
-      </div>
-    </div>
-
-    <div class="app-bar__actions">
-      <button type="button" class="icon-btn" id="langBtn" aria-label="Switch language">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="9"/>
-          <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>
-        </svg>
-      </button>
-      <button type="button" class="icon-btn" id="themeToggle"
-              aria-label="Toggle theme" aria-pressed="false">
-        <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
-        </svg>
-        <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="4"/>
-          <path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>
-        </svg>
-      </button>
-    </div>
-  </header>
-
-  <main class="app-body" id="appBody">
-
-    <!-- ============ INPUT VIEW ============ -->
-    <section class="view view--input" data-view="input">
-      <div class="install-banner" id="installBanner" hidden>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
-        <p data-i18n="install_text">安装到主屏幕，离线也能使用</p>
-        <button type="button" class="install-go" id="installGo" data-i18n="install_btn">安装</button>
-        <button type="button" class="install-x" id="installX" aria-label="Dismiss">
-          <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
-        </button>
-      </div>
-
-      <div class="card">
-        <form class="form" id="form" novalidate>
-          <div class="form-header">
-            <h2 data-i18n="form_title">你的身体数据</h2>
-            <span data-i18n="form_hint">全部为必填</span>
-          </div>
-
-          <div class="field">
-            <span class="field-label" id="genderLabel" data-i18n="lbl_gender">性别</span>
-            <div class="segmented" role="radiogroup" aria-labelledby="genderLabel">
-              <label class="seg-btn">
-                <input type="radio" name="gender" value="female" checked>
-                <span data-i18n="lbl_female">女性</span>
-              </label>
-              <label class="seg-btn">
-                <input type="radio" name="gender" value="male">
-                <span data-i18n="lbl_male">男性</span>
-              </label>
-            </div>
-          </div>
-
-          <div class="grid-2">
-            <div class="field">
-              <label class="field-label" for="height">
-                <span data-i18n="lbl_height">身高</span>
-                <span class="hint">140–190</span>
-              </label>
-              <div class="input-wrap">
-                <input id="height" type="number" inputmode="decimal" step="0.1"
-                       min="140" max="190" data-i18n-ph="ph_height" placeholder="165">
-                <span class="unit" aria-hidden="true">cm</span>
-              </div>
-            </div>
-            <div class="field">
-              <label class="field-label" for="weight">
-                <span data-i18n="lbl_weight">当前体重</span>
-              </label>
-              <div class="input-wrap">
-                <input id="weight" type="number" inputmode="decimal" step="0.1"
-                       min="1" data-i18n-ph="ph_weight" placeholder="60.5">
-                <span class="unit" aria-hidden="true">kg</span>
-              </div>
-            </div>
-            <div class="field">
-              <label class="field-label" for="bodyfat">
-                <span data-i18n="lbl_bodyfat">体脂率</span>
-              </label>
-              <div class="input-wrap">
-                <input id="bodyfat" type="number" inputmode="decimal" step="0.1"
-                       min="1" max="75" data-i18n-ph="ph_bodyfat" placeholder="20.5">
-                <span class="unit" aria-hidden="true">%</span>
-              </div>
-            </div>
-            <div class="field">
-              <label class="field-label" for="muscle">
-                <span data-i18n="lbl_muscle">肌肉量</span>
-              </label>
-              <div class="input-wrap">
-                <input id="muscle" type="number" inputmode="decimal" step="0.1"
-                       min="0.1" data-i18n-ph="ph_muscle" placeholder="35.5">
-                <span class="unit" aria-hidden="true">kg</span>
-              </div>
-            </div>
-          </div>
-
-          <p class="form-error" id="formError" role="alert" hidden></p>
-
-          <div class="actions">
-            <button type="submit" class="btn btn-primary" data-i18n="btn_calc">开始分析</button>
-            <button type="button" class="btn btn-ghost" id="btnClear" data-i18n="btn_clear">清除数据</button>
-          </div>
-        </form>
-      </div>
-    </section>
-
-    <!-- ============ RESULTS VIEW ============ -->
-    <section class="view view--results" data-view="results" hidden aria-live="polite">
-
-      <div class="summary-bar" id="summaryBar" hidden></div>
-
-      <div class="empty-panel" id="emptyState">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M3 3v18h18"/><path d="M7 15l4-4.5 3 3L19 7"/>
-        </svg>
-        <p data-i18n="empty_text">还没有数据，先去「输入」页填写吧</p>
-      </div>
-
-      <div class="result-stack" id="resultStack" hidden>
-
-        <div class="bmi-hero" id="bmiHero" data-cat="normal">
-          <div class="bmi-hero-head">
-            <div>
-              <div class="bmi-hero-label" data-i18n="bmi_label">BMI</div>
-              <div class="bmi-hero-number" id="bmiValue">0.0</div>
-            </div>
-            <div class="bmi-hero-cat">
-              <strong id="bmiCategory">—</strong>
-              <span id="bmiCategoryRange">—</span>
-            </div>
-          </div>
-          <div class="bmi-scale-track">
-            <span class="bmi-seg bmi-seg--under"></span>
-            <span class="bmi-seg bmi-seg--normal"></span>
-            <span class="bmi-seg bmi-seg--over"></span>
-            <span class="bmi-seg bmi-seg--obese"></span>
-            <div class="bmi-scale-marker" id="bmiMarker"></div>
-          </div>
-          <div class="bmi-scale-labels" aria-hidden="true">
-            <span data-i18n="bmi_short_under">偏瘦</span>
-            <span data-i18n="bmi_short_normal">正常</span>
-            <span data-i18n="bmi_short_over">偏重</span>
-            <span data-i18n="bmi_short_obese">肥胖</span>
-          </div>
-        </div>
-
-        <div class="status" id="status" data-state="ok">
-          <div class="status-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path class="ico-lose" d="M12 5v14M19 12l-7 7-7-7"/>
-              <path class="ico-gain" d="M12 19V5M5 12l7-7 7 7"/>
-              <path class="ico-ok"   d="M20 6L9 17l-5-5"/>
-            </svg>
-          </div>
-          <div class="status-text">
-            <strong id="statusTitle">—</strong>
-            <span id="statusSub">—</span>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="range-head">
-            <span class="range-title" data-i18n="range_title">体重位置</span>
-            <span class="range-current"><span id="currentWeight">0.0</span> kg</span>
-          </div>
-          <div class="range-track">
-            <div class="range-band" id="rangeBand"></div>
-            <div class="range-marker" id="rangeMarker"></div>
-          </div>
-          <div class="range-scale">
-            <span id="scaleMin">—</span>
-            <span id="scaleMax">—</span>
-          </div>
-        </div>
-
-        <div class="metrics">
-          <div class="metric metric--violet" id="cardFat">
-            <span class="metric-label" data-i18n="lbl_fat_label">体脂重量</span>
-            <span class="metric-value"><span id="fatMass">0.0</span><span class="metric-unit">kg</span></span>
-          </div>
-          <div class="metric metric--cyan" id="cardMuscle">
-            <span class="metric-label" data-i18n="lbl_muscle_result">肌肉率</span>
-            <span class="metric-value"><span id="muscleRatio">0.0</span><span class="metric-unit">%</span></span>
-          </div>
-          <div class="metric metric--amber metric--wide" id="cardIdeal">
-            <span class="metric-label" data-i18n="lbl_ideal_label">标准体重区间</span>
-            <span class="metric-value"><span id="idealRange">0.0 – 0.0</span><span class="metric-unit">kg</span></span>
-          </div>
-          <div class="metric metric--wide" id="timeCard" data-state="ok">
-            <span class="metric-label" data-i18n="month_label">达标所需时间</span>
-            <span class="metric-value">
-              <span id="timeValue">—</span><span class="metric-unit" id="timeUnit"></span>
-            </span>
-            <span class="metric-sub" id="timeSub"></span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <nav class="tab-bar" role="tablist" aria-label="Main navigation">
-    <button class="tab is-active" data-tab="input" role="tab" aria-selected="true">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
-      </svg>
-      <span data-i18n="tab_input">输入</span>
-    </button>
-    <button class="tab" data-tab="results" role="tab" aria-selected="false" id="tabResults">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M3 3v18h18"/><path d="M7 15l4-4.5 3 3L19 7"/>
-      </svg>
-      <span data-i18n="tab_results">分析</span>
-      <span class="tab__badge" id="tabBadge" hidden></span>
-    </button>
-  </nav>
-
+<div class="app">
+<header class="bar" id="bar">
+<div class="brand">
+<div class="bmark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></div>
+<div class="btitle"><strong data-i="title">智能健康分析助手</strong><small data-i="subtitle">输入数据，精准评估</small></div>
 </div>
-
+<div class="bacts">
+<button type="button" class="ibtn" id="lang" aria-label="Switch language"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></button>
+<button type="button" class="ibtn" id="theme" aria-label="Toggle theme" aria-pressed="false"><svg class="imoon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="isun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></button>
+</div>
+</header>
+<main class="body" id="body">
+<section class="view" data-v="input">
+<div class="card"><form class="form" id="form" novalidate>
+<div class="fh"><h2 data-i="form_title">你的身体数据</h2><span data-i="form_hint">全部为必填</span></div>
+<div class="fld"><span class="flbl" id="glabel" data-i="lbl_gender">性别</span>
+<div class="seg" role="radiogroup" aria-labelledby="glabel">
+<label class="segb"><input type="radio" name="gender" value="female" checked><span data-i="lbl_female">女性</span></label>
+<label class="segb"><input type="radio" name="gender" value="male"><span data-i="lbl_male">男性</span></label>
+</div></div>
+<div class="g2">
+<div class="fld"><label class="flbl" for="height"><span data-i="lbl_height">身高</span><span class="hint">140–190</span></label>
+<div class="iw"><input id="height" type="number" inputmode="decimal" step="0.1" min="140" max="190" data-ph="ph_height" placeholder="165"><span class="un">cm</span></div></div>
+<div class="fld"><label class="flbl" for="weight"><span data-i="lbl_weight">当前体重</span></label>
+<div class="iw"><input id="weight" type="number" inputmode="decimal" step="0.1" min="1" data-ph="ph_weight" placeholder="60.5"><span class="un">kg</span></div></div>
+<div class="fld"><label class="flbl" for="bodyfat"><span data-i="lbl_bodyfat">体脂率</span></label>
+<div class="iw"><input id="bodyfat" type="number" inputmode="decimal" step="0.1" min="1" max="75" data-ph="ph_bodyfat" placeholder="20.5"><span class="un">%</span></div></div>
+<div class="fld"><label class="flbl" for="muscle"><span data-i="lbl_muscle">肌肉量</span></label>
+<div class="iw"><input id="muscle" type="number" inputmode="decimal" step="0.1" min="0.1" data-ph="ph_muscle" placeholder="35.5"><span class="un">kg</span></div></div>
+</div>
+<p class="err" id="err" role="alert" hidden></p>
+<div class="acts">
+<button type="submit" class="btn bp" data-i="btn_calc">开始分析</button>
+<button type="button" class="btn bg" id="clear" data-i="btn_clear">清除数据</button>
+</div>
+</form></div>
+</section>
+<section class="view" data-v="results" hidden aria-live="polite">
+<div class="sbar" id="sbar" hidden></div>
+<div class="empty" id="empty">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4.5 3 3L19 7"/></svg>
+<p data-i="empty_text">还没有数据，先去「输入」页填写吧</p>
+</div>
+<div class="rstk" id="rstk" hidden>
+<div class="bh" id="bh" data-cat="normal">
+<div class="bhh"><div><div class="bhl" data-i="bmi_label">BMI</div><div class="bhn" id="bhn">0.0</div></div>
+<div class="bhc"><strong id="bhc">—</strong><span id="bhr">—</span></div></div>
+<div class="bst"><span class="bss u"></span><span class="bss n"></span><span class="bss o"></span><span class="bss b"></span><div class="bsm" id="bsm"></div></div>
+<div class="bsl" aria-hidden="true"><span data-i="bmi_short_under">偏瘦</span><span data-i="bmi_short_normal">正常</span><span data-i="bmi_short_over">偏重</span><span data-i="bmi_short_obese">肥胖</span></div>
+</div>
+<div class="sts" id="sts" data-s="ok">
+<div class="sti"><svg viewBox="0 0 24 24"><path class="il" d="M12 5v14M19 12l-7 7-7-7"/><path class="ig" d="M12 19V5M5 12l7-7 7 7"/><path class="io" d="M20 6L9 17l-5-5"/></svg></div>
+<div class="stt"><strong id="stt">—</strong><span id="stsub">—</span></div>
+</div>
+<div class="card">
+<div class="rh"><span class="rt" data-i="range_title">体重位置</span><span class="rc"><span id="cw">0.0</span> kg</span></div>
+<div class="rtk"><div class="rb" id="rb"></div><div class="rm" id="rm"></div></div>
+<div class="rs"><span id="smin">—</span><span id="smax">—</span></div>
+</div>
+<div class="mt">
+<div class="m v" id="cf"><span class="ml" data-i="lbl_fat_label">体脂重量</span><span class="mv"><span id="fm">0.0</span><span class="mu">kg</span></span></div>
+<div class="m c" id="cm"><span class="ml" data-i="lbl_muscle_result">肌肉率</span><span class="mv"><span id="mr">0.0</span><span class="mu">%</span></span></div>
+<div class="m a w" id="ci"><span class="ml" data-i="lbl_ideal_label">标准体重区间</span><span class="mv"><span id="ir">0.0 – 0.0</span><span class="mu">kg</span></span></div>
+<div class="m w" id="tc" data-s="ok">
+<span class="ml" data-i="month_label">达标所需时间</span>
+<span class="mv"><span id="tv">—</span><span class="mu" id="tu"></span></span>
+<span class="ms" id="ts"></span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<nav class="tabs" role="tablist">
+<button class="tab on" data-t="input" role="tab" aria-selected="true"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg><span data-i="tab_input">输入</span></button>
+<button class="tab" data-t="results" role="tab" aria-selected="false" id="tabr"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4.5 3 3L19 7"/></svg><span data-i="tab_results">分析</span><span class="bdg" id="bdg" hidden></span></button>
+</nav>
+</div>
 <script type="module">
-/* =========================================================
-   Configuration
-   ========================================================= */
-const CONFIG = Object.freeze({
-  height:      { min: 140, max: 190 },
-  weight:      { min: 0.1, max: 500 },
-  fat:         { min: 1,   max: 75  },
-  monthlyRate: 3,
-  bmiBands:    Object.freeze({ female: [20, 21.5], male: [21.5, 23] }),
-  bmiCdc:      Object.freeze({ under: 18.5, over: 25, obese: 30 }),
-  bmiScale:    Object.freeze([14, 40]),
-});
-
-const KEY = { theme: 'sha-theme', lang: 'sha-lang', install: 'sha-install-dismissed' };
-
-const FIELD_META = Object.freeze({
-  height:  { min: 140, max: 190, step: 1,   unit: 'cm',
-             valid: (v) => v >= 140 && v <= 190,
-             labelKey: 'lbl_height' },
-  weight:  { min: 1,   max: 500, step: 0.5, unit: 'kg',
-             valid: (v) => v > 0 && v <= 500,
-             labelKey: 'lbl_weight' },
-  bodyfat: { min: 1,   max: 75,  step: 0.5, unit: '%',
-             valid: (v) => v >= 1 && v <= 75,
-             labelKey: 'lbl_bodyfat' },
-  muscle:  { min: 0.1, max: 500, step: 0.5, unit: 'kg',
-             valid: (v) => v > 0,
-             labelKey: 'lbl_muscle' },
-});
-
-/* =========================================================
-   Pure domain
-   ========================================================= */
-const idealWeights = (h, g) => {
-  const m2 = (h / 100) ** 2;
-  const [lo, hi] = CONFIG.bmiBands[g];
-  return [lo * m2, hi * m2];
-};
-
-const bmiCategory = (bmi) =>
-  bmi < CONFIG.bmiCdc.under ? 'under'  :
-  bmi < CONFIG.bmiCdc.over  ? 'normal' :
-  bmi < CONFIG.bmiCdc.obese ? 'over'   : 'obese';
-
-function analyze({ gender, height, weight, bodyfat, muscle }) {
-  const [idealMin, idealMax] = idealWeights(height, gender);
-  const bmi = weight / (height / 100) ** 2;
-  const mode = weight < idealMin ? 'gain' : weight > idealMax ? 'lose' : 'ok';
-  const diff = mode === 'gain' ? idealMin - weight
-             : mode === 'lose' ? weight - idealMax : 0;
-  const months = diff > 0 ? Math.ceil(diff / CONFIG.monthlyRate) : 0;
-
-  return {
-    weight, mode, diff, months, weeks: months * 4,
-    idealMin, idealMax, bmi,
-    bmiCat: bmiCategory(bmi),
-    fatMass: weight * bodyfat / 100,
-    muscleRatio: muscle / weight * 100,
-  };
-}
-
-/* =========================================================
-   Translations
-   ========================================================= */
-const I18N = Object.freeze({
-  zh: {
-    title: '智能健康分析助手', subtitle: '输入数据，精准评估',
-    form_title: '你的身体数据', form_hint: '全部为必填',
-    lbl_gender: '性别', lbl_female: '女性', lbl_male: '男性',
-    lbl_height: '身高', lbl_weight: '当前体重',
-    lbl_bodyfat: '体脂率', lbl_muscle: '肌肉量',
-    ph_height: '165', ph_weight: '60.5', ph_bodyfat: '20.5', ph_muscle: '35.5',
-    btn_calc: '开始分析', btn_clear: '清除数据',
-    btn_cancel: '取消', btn_confirm: '确定',
-    btn_edit_full: '完整编辑',
-    edit_hint: '轻触任一数值即可修改',
-    err_height: '请输入 140–190 之间的身高。',
-    err_weight: '请输入有效的体重（大于 0）。',
-    err_bodyfat: '请输入 1–75 之间的体脂率。',
-    err_muscle: '请输入有效的肌肉量（大于 0）。',
-    err_muscle_big: '肌肉量不能大于或等于总体重。',
-    err_range: '请输入 {min} – {max} {unit} 之间的数值。',
-    empty_text: '还没有数据，先去「输入」页填写吧',
-    bmi_label: 'BMI',
-    bmi_under: '偏瘦', bmi_normal: '正常', bmi_over: '偏重', bmi_obese: '肥胖',
-    bmi_short_under: '偏瘦', bmi_short_normal: '正常',
-    bmi_short_over: '偏重', bmi_short_obese: '肥胖',
-    bmi_range_under: '低于 18.5', bmi_range_normal: '18.5 – 25',
-    bmi_range_over: '25 – 30',    bmi_range_obese: '高于 30',
-    status_lose: '需要减重', status_gain: '需要增重', status_ok: '体重达标',
-    status_lose_sub: '当前 {w} kg，超出上限 {d} kg',
-    status_gain_sub: '当前 {w} kg，低于下限 {d} kg',
-    status_ok_sub: '当前 {w} kg 处于标准范围内，继续保持',
-    range_title: '体重位置',
-    lbl_fat_label: '体脂重量', lbl_muscle_result: '肌肉率',
-    lbl_ideal_label: '标准体重区间', month_label: '达标所需时间',
-    time_unit_months: '个月', time_sub_weeks: '约 {weeks} 周',
-    time_ok: '已达标，保持即可',
-    theme_light: '切换到浅色模式', theme_dark: '切换到深色模式',
-    tab_input: '输入', tab_results: '分析',
-    install_text: '安装到主屏幕，离线也能使用', install_btn: '安装',
-  },
-  en: {
-    title: 'Smart Health Analyzer', subtitle: 'Accurate health assessment',
-    form_title: 'Your Body Data', form_hint: 'All fields required',
-    lbl_gender: 'Gender', lbl_female: 'Female', lbl_male: 'Male',
-    lbl_height: 'Height', lbl_weight: 'Weight',
-    lbl_bodyfat: 'Body Fat', lbl_muscle: 'Muscle',
-    ph_height: '165', ph_weight: '60.5', ph_bodyfat: '20.5', ph_muscle: '35.5',
-    btn_calc: 'Analyze', btn_clear: 'Clear All',
-    btn_cancel: 'Cancel', btn_confirm: 'Confirm',
-    btn_edit_full: 'Edit All',
-    edit_hint: 'Tap any value to edit',
-    err_height: 'Please enter a height between 140 and 190 cm.',
-    err_weight: 'Please enter a valid weight (greater than 0).',
-    err_bodyfat: 'Please enter a body fat percentage between 1 and 75.',
-    err_muscle: 'Please enter a valid muscle mass (greater than 0).',
-    err_muscle_big: 'Muscle mass cannot be equal to or greater than total weight.',
-    err_range: 'Enter a value between {min} and {max} {unit}.',
-    empty_text: 'No data yet — fill in the “Input” tab first',
-    bmi_label: 'BMI',
-    bmi_under: 'Underweight', bmi_normal: 'Normal',
-    bmi_over: 'Overweight',   bmi_obese: 'Obese',
-    bmi_short_under: 'Under', bmi_short_normal: 'Normal',
-    bmi_short_over: 'Over',   bmi_short_obese: 'Obese',
-    bmi_range_under: 'Below 18.5', bmi_range_normal: '18.5 – 25',
-    bmi_range_over: '25 – 30',     bmi_range_obese: 'Above 30',
-    status_lose: 'Weight Loss Needed', status_gain: 'Weight Gain Needed',
-    status_ok: 'Within Healthy Range',
-    status_lose_sub: 'Currently {w} kg — {d} kg above the upper limit',
-    status_gain_sub: 'Currently {w} kg — {d} kg below the lower limit',
-    status_ok_sub: 'Currently {w} kg — nicely within the healthy range',
-    range_title: 'Weight Position',
-    lbl_fat_label: 'Fat Mass', lbl_muscle_result: 'Muscle Ratio',
-    lbl_ideal_label: 'Ideal Weight Range', month_label: 'Time to Goal',
-    time_unit_months: 'months', time_sub_weeks: '≈ {weeks} weeks',
-    time_ok: 'On target — keep it up',
-    theme_light: 'Switch to light mode', theme_dark: 'Switch to dark mode',
-    tab_input: 'Input', tab_results: 'Results',
-    install_text: 'Install to home screen for offline use', install_btn: 'Install',
-  },
-});
-
-/* =========================================================
-   DOM
-   ========================================================= */
-const $  = (sel, root = document) => root.querySelector(sel);
-const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
-
-const el = {
-  appBar: $('#appBar'), appBody: $('#appBody'),
-  form: $('#form'), error: $('#formError'),
-  height: $('#height'), weight: $('#weight'),
-  bodyfat: $('#bodyfat'), muscle: $('#muscle'),
-  empty: $('#emptyState'), stack: $('#resultStack'),
-  summaryBar: $('#summaryBar'),
-  bmiHero: $('#bmiHero'), bmiValue: $('#bmiValue'),
-  bmiCategory: $('#bmiCategory'), bmiCategoryRange: $('#bmiCategoryRange'),
-  bmiMarker: $('#bmiMarker'),
-  status: $('#status'), statusTitle: $('#statusTitle'), statusSub: $('#statusSub'),
-  currentWeight: $('#currentWeight'),
-  rangeBand: $('#rangeBand'), rangeMarker: $('#rangeMarker'),
-  scaleMin: $('#scaleMin'), scaleMax: $('#scaleMax'),
-  fatMass: $('#fatMass'), muscleRatio: $('#muscleRatio'),
-  idealRange: $('#idealRange'),
-  timeCard: $('#timeCard'), timeValue: $('#timeValue'),
-  timeUnit: $('#timeUnit'), timeSub: $('#timeSub'),
-  cardFat: $('#cardFat'), cardMuscle: $('#cardMuscle'), cardIdeal: $('#cardIdeal'),
-  themeToggle: $('#themeToggle'), langBtn: $('#langBtn'),
-  tabResults: $('#tabResults'), tabBadge: $('#tabBadge'),
-  btnClear: $('#btnClear'),
-  installBanner: $('#installBanner'), installGo: $('#installGo'), installX: $('#installX'),
-};
-
-/* =========================================================
-   State
-   ========================================================= */
-const state = {
-  lang:   'zh',
-  theme:  document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light',
-  view:   'input',
-  values: null,
-  result: null,
-};
-
-const scrollMemory = { input: 0, results: 0 };
-
-try {
-  const savedLang = localStorage.getItem(KEY.lang);
-  if (savedLang === 'zh' || savedLang === 'en') state.lang = savedLang;
-} catch {}
-
-const fmt1 = (n) => n.toFixed(1);
-const fmtRange = (min, max) =>
-  `${Number.isInteger(min) ? min : fmt1(min)} – ${Number.isInteger(max) ? max : fmt1(max)}`;
-const fill = (s, v) => s.replace(/\{(\w+)\}/g, (_, k) => v[k] ?? '');
-const haptic = (pattern = 8) => { try { navigator.vibrate?.(pattern); } catch {} };
-const shake = (node) => node.animate(
-  [{ translate: '0' }, { translate: '-4px' }, { translate: '4px' }, { translate: '0' }],
-  { duration: 280, easing: 'ease-in-out' },
-);
-
-/* =========================================================
-   Theme
-   ========================================================= */
-function syncThemeButton() {
-  const label = I18N[state.lang][state.theme === 'dark' ? 'theme_light' : 'theme_dark'];
-  el.themeToggle.setAttribute('aria-label', label);
-  el.themeToggle.setAttribute('aria-pressed', String(state.theme === 'dark'));
-
-  const color = state.theme === 'dark' ? '#0b1220' : '#eef1f6';
-  let meta = $('meta[name="theme-color"]:not([media])');
-  if (!meta) {
-    meta = document.createElement('meta');
-    meta.name = 'theme-color';
-    document.head.append(meta);
-  }
-  meta.content = color;
-}
-
-function setTheme(theme) {
-  state.theme = theme;
-  document.documentElement.dataset.theme = theme;
-  try { localStorage.setItem(KEY.theme, theme); } catch {}
-  syncThemeButton();
-}
-
-/* =========================================================
-   i18n
-   ========================================================= */
-function applyI18n() {
-  const t = I18N[state.lang];
-  document.documentElement.lang = state.lang === 'zh' ? 'zh-CN' : 'en';
-
-  for (const n of $$('[data-i18n]')) {
-    const v = t[n.dataset.i18n];
-    if (v != null) n.textContent = v;
-  }
-  for (const n of $$('[data-i18n-ph]')) {
-    const v = t[n.dataset.i18nPh];
-    if (v != null) n.placeholder = v;
-  }
-
-  syncThemeButton();
-  if (state.values) buildSummaryBar();
-}
-
-function setLang(lang) {
-  if (lang === state.lang) return;
-  state.lang = lang;
-  try { localStorage.setItem(KEY.lang, lang); } catch {}
-  applyI18n();
-  if (state.result) render();
-}
-
-/* =========================================================
-   Navigation
-   ========================================================= */
-function switchView(view, { smooth = false } = {}) {
-  if (view === state.view) return;
-
-  scrollMemory[state.view] = el.appBody.scrollTop;
-  state.view = view;
-
-  for (const section of $$('.view')) {
-    section.hidden = section.dataset.view !== view;
-  }
-  for (const tab of $$('.tab')) {
-    const active = tab.dataset.tab === view;
-    tab.classList.toggle('is-active', active);
-    tab.setAttribute('aria-selected', String(active));
-  }
-  updateTabBadge();
-
-  const top = scrollMemory[view] ?? 0;
-  el.appBody.scrollTo({ top, behavior: smooth ? 'smooth' : 'instant' });
-}
-
-function updateTabBadge() {
-  el.tabBadge.hidden = !(state.result && state.view !== 'results');
-}
-
-/* =========================================================
-   Form ↔ State
-   ========================================================= */
-function syncFormFromState() {
-  const v = state.values;
-  if (!v) return;
-  const g = $(`input[name="gender"][value="${v.gender}"]`);
-  if (g) g.checked = true;
-  el.height.value  = v.height;
-  el.weight.value  = v.weight;
-  el.bodyfat.value = v.bodyfat;
-  el.muscle.value  = v.muscle;
-}
-
-/* =========================================================
-   Validation (main form)
-   ========================================================= */
-const FIELDS = [
-  { key: 'height',  input: el.height,  error: 'err_height',
-    valid: (v) => v >= CONFIG.height.min && v <= CONFIG.height.max },
-  { key: 'weight',  input: el.weight,  error: 'err_weight',
-    valid: (v) => v > 0 && v <= CONFIG.weight.max },
-  { key: 'bodyfat', input: el.bodyfat, error: 'err_bodyfat',
-    valid: (v) => v >= CONFIG.fat.min && v <= CONFIG.fat.max },
-  { key: 'muscle',  input: el.muscle,  error: 'err_muscle',
-    valid: (v) => v > 0 },
-];
-
-function showError(key, input) {
-  el.error.textContent = I18N[state.lang][key] ?? key;
-  el.error.hidden = false;
-  shake(el.error);
-  haptic([20, 40, 20]);
-  if (input) {
-    input.classList.add('is-invalid');
-    input.setAttribute('aria-invalid', 'true');
-    input.focus({ preventScroll: false });
-    input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-}
-
-function clearErrors() {
-  el.error.hidden = true;
-  for (const f of FIELDS) {
-    f.input.classList.remove('is-invalid');
-    f.input.removeAttribute('aria-invalid');
-  }
-}
-
-function readAndValidate() {
-  clearErrors();
-  const values = {};
-  for (const f of FIELDS) {
-    const v = Number.parseFloat(f.input.value);
-    values[f.key] = v;
-    if (!Number.isFinite(v) || !f.valid(v)) {
-      showError(f.error, f.input);
-      return null;
-    }
-  }
-  if (values.muscle >= values.weight) {
-    showError('err_muscle_big', el.muscle);
-    return null;
-  }
-  values.gender = $('input[name="gender"]:checked').value;
-  return values;
-}
-
-/* =========================================================
-   Chip rendering
-   ========================================================= */
-function chipHTML(field) {
-  const t = I18N[state.lang];
-  const v = state.values;
-
-  if (field === 'gender') {
-    const isF = v.gender === 'female';
-    return `
-      <span class="chip__icon" aria-hidden="true">${isF ? '♀' : '♂'}</span>
-      <span class="chip__label">${t.lbl_gender}</span>
-      <span class="chip__value">${isF ? t.lbl_female : t.lbl_male}</span>`;
-  }
-
-  const meta = FIELD_META[field];
-  return `
-    <span class="chip__label">${t[meta.labelKey]}</span>
-    <span class="chip__value">${fmt1(v[field])}</span>
-    <span class="chip__unit">${meta.unit}</span>`;
-}
-
-/* =========================================================
-   Inline editor
-   ========================================================= */
-function openEditor(chip, field) {
-  if (chip.classList.contains('chip--editing')) return;
-
-  const t = I18N[state.lang];
-  const meta = FIELD_META[field];
-  const current = state.values[field];
-
-  chip.classList.add('chip--editing');
-  chip.removeAttribute('role');
-  chip.removeAttribute('tabindex');
-  chip.setAttribute('aria-label', `${t[meta.labelKey]}: ${current} ${meta.unit}`);
-
-  chip.innerHTML = `
-    <div class="editor" role="group" aria-label="${t[meta.labelKey]}">
-      <div class="editor__head">
-        <span class="editor__label">${t[meta.labelKey]}</span>
-        <span class="editor__range">${fmtRange(meta.min, meta.max)} ${meta.unit}</span>
-      </div>
-      <div class="editor__field">
-        <button type="button" class="editor__step" data-step="-1"
-                aria-label="Decrease">−</button>
-        <input class="editor__input" type="number" inputmode="decimal"
-               step="${meta.step}" min="${meta.min}" max="${meta.max}"
-               value="${current}" aria-label="${t[meta.labelKey]}">
-        <span class="editor__unit" aria-hidden="true">${meta.unit}</span>
-        <button type="button" class="editor__step" data-step="1"
-                aria-label="Increase">+</button>
-      </div>
-      <p class="editor__error" hidden></p>
-      <div class="editor__actions">
-        <button type="button" class="editor__btn editor__btn--ghost" data-act="cancel">
-          ${t.btn_cancel}
-        </button>
-        <button type="button" class="editor__btn editor__btn--primary" data-act="confirm">
-          ${t.btn_confirm}
-        </button>
-      </div>
-    </div>`;
-
-  const input  = chip.querySelector('.editor__input');
-  const errEl  = chip.querySelector('.editor__error');
-
-  requestAnimationFrame(() => {
-    input.focus();
-    input.select();
-  });
-
-  let committed = false;
-
-  const validate = () => {
-    const num = Number.parseFloat(input.value);
-    if (!Number.isFinite(num) || !meta.valid(num)) {
-      errEl.textContent = fill(t.err_range, {
-        min: meta.min, max: meta.max, unit: meta.unit,
-      });
-      errEl.hidden = false;
-      input.classList.add('is-invalid');
-      shake(chip);
-      haptic([20, 30, 20]);
-      return null;
-    }
-    if (field === 'muscle' && num >= state.values.weight) {
-      errEl.textContent = t.err_muscle_big;
-      errEl.hidden = false;
-      input.classList.add('is-invalid');
-      shake(chip);
-      haptic([20, 30, 20]);
-      return null;
-    }
-    errEl.hidden = true;
-    input.classList.remove('is-invalid');
-    return num;
-  };
-
-  const commit = () => {
-    if (committed) return false;
-    const num = validate();
-    if (num == null) return false;
-
-    committed = true;
-    state.values = { ...state.values, [field]: num };
-    syncFormFromState();
-    state.result = analyze(state.values);
-    render();
-    renderChip(el.summaryBar.querySelector(`.chip[data-field="${field}"]`), field);
-    pulseMetric(field);
-    haptic(10);
-    return true;
-  };
-
-  const cancel = () => {
-    if (committed) return;
-    committed = true;
-    renderChip(chip, field);
-    haptic(6);
-  };
-
-  chip.querySelector('[data-act="confirm"]').addEventListener('click', commit);
-  chip.querySelector('[data-act="cancel"]').addEventListener('click', cancel);
-
-  chip.querySelectorAll('.editor__step').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const dir = Number(btn.dataset.step);
-      const metaStep = meta.step || 1;
-      const cur = Number.parseFloat(input.value);
-      const base = Number.isFinite(cur) ? cur : 0;
-      let next = base + dir * metaStep;
-      next = Math.round(next * 100) / 100;
-      next = Math.min(meta.max, Math.max(meta.min, next));
-      input.value = String(next);
-      input.classList.remove('is-invalid');
-      errEl.hidden = true;
-      haptic(5);
-    });
-  });
-
-  input.addEventListener('input', () => {
-    input.classList.remove('is-invalid');
-    errEl.hidden = true;
-  });
-
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') { e.preventDefault(); commit(); }
-    else if (e.key === 'Escape') { e.preventDefault(); cancel(); }
-  });
-
-  const outside = (e) => {
-    if (!chip.contains(e.target)) {
-      cancel();
-      document.removeEventListener('pointerdown', outside, true);
-    }
-  };
-  setTimeout(() => {
-    document.addEventListener('pointerdown', outside, true);
-  }, 0);
-}
-
-/* =========================================================
-   Chip render helpers
-   ========================================================= */
-function renderChip(chip, field) {
-  chip.classList.remove('chip--editing');
-  chip.innerHTML = chipHTML(field);
-  chip.setAttribute('role', 'button');
-  chip.setAttribute('tabindex', '0');
-  const t = I18N[state.lang];
-  if (field === 'gender') {
-    chip.setAttribute('aria-label',
-      `${t.lbl_gender}: ${state.values.gender === 'female' ? t.lbl_female : t.lbl_male}`);
-  } else {
-    const meta = FIELD_META[field];
-    chip.setAttribute('aria-label',
-      `${t[meta.labelKey]}: ${fmt1(state.values[field])} ${meta.unit}`);
-  }
-}
-
-function buildSummaryBar() {
-  if (!state.values) {
-    el.summaryBar.replaceChildren();
-    el.summaryBar.hidden = true;
-    return;
-  }
-
-  const t = I18N[state.lang];
-  const frag = document.createDocumentFragment();
-
-  const hint = document.createElement('p');
-  hint.className = 'summary-hint';
-  hint.innerHTML = `
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
-    </svg>
-    <span>${t.edit_hint}</span>`;
-  frag.append(hint);
-
-  for (const field of ['gender', 'height', 'weight', 'bodyfat', 'muscle']) {
-    const chip = document.createElement('span');
-    chip.className = 'chip';
-    chip.dataset.field = field;
-    renderChip(chip, field);
-    frag.append(chip);
-  }
-
-  const editAll = document.createElement('span');
-  editAll.className = 'chip chip--action';
-  editAll.dataset.action = 'edit';
-  editAll.setAttribute('role', 'button');
-  editAll.setAttribute('tabindex', '0');
-  editAll.setAttribute('aria-label', t.btn_edit_full);
-  editAll.innerHTML = `
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-      <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-    </svg>
-    <span>${t.btn_edit_full}</span>`;
-  frag.append(editAll);
-
-  el.summaryBar.replaceChildren(frag);
-  el.summaryBar.hidden = false;
-}
-
-/* =========================================================
-   Chip activation
-   ========================================================= */
-function activateChip(chip) {
-  if (!chip) return;
-  const action = chip.dataset.action;
-  if (action === 'edit') {
-    haptic();
-    switchView('input', { smooth: true });
-    return;
-  }
-
-  const field = chip.dataset.field;
-  if (!field) return;
-
-  if (field === 'gender') {
-    haptic();
-    state.values = {
-      ...state.values,
-      gender: state.values.gender === 'female' ? 'male' : 'female',
-    };
-    syncFormFromState();
-    state.result = analyze(state.values);
-    render();
-    renderChip(chip, 'gender');
-    haptic(8);
-    return;
-  }
-  openEditor(chip, field);
-}
-
-el.summaryBar.addEventListener('click', (e) => {
-  if (e.target.closest('.editor')) return;
-  const chip = e.target.closest('.chip');
-  if (!chip) return;
-  activateChip(chip);
-});
-
-el.summaryBar.addEventListener('keydown', (e) => {
-  if (e.key !== 'Enter' && e.key !== ' ') return;
-  const chip = e.target.closest('.chip');
-  if (!chip || e.target.closest('.editor')) return;
-  e.preventDefault();
-  activateChip(chip);
-});
-
-/* =========================================================
-   Render
-   ========================================================= */
-function pulseMetric(field) {
-  const card = field === 'bodyfat' ? el.cardFat
-             : field === 'muscle'  ? el.cardMuscle
-             : field === 'weight'  ? el.cardIdeal
-             : null;
-  if (!card) return;
-  card.classList.remove('is-updating');
-  void card.offsetWidth;
-  card.classList.add('is-updating');
-}
-
-function render() {
-  const r = state.result;
-  if (!r) return;
-  const t = I18N[state.lang];
-
-  el.bmiHero.dataset.cat = r.bmiCat;
-  el.bmiValue.textContent = fmt1(r.bmi);
-  el.bmiCategory.textContent = t[`bmi_${r.bmiCat}`];
-  el.bmiCategoryRange.textContent = t[`bmi_range_${r.bmiCat}`];
-
-  const [sMinB, sMaxB] = CONFIG.bmiScale;
-  const bmiPct = Math.min(97, Math.max(3, (r.bmi - sMinB) / (sMaxB - sMinB) * 100));
-  el.bmiMarker.style.insetInlineStart = `${bmiPct}%`;
-
-  el.status.dataset.state = r.mode;
-  el.statusTitle.textContent = t[`status_${r.mode}`];
-  el.statusSub.textContent = fill(t[`status_${r.mode}_sub`], {
-    w: fmt1(r.weight), d: fmt1(r.diff),
-  });
-
-  const span  = Math.max(r.idealMax - r.idealMin, 4);
-  const pad   = span * 1.2;
-  const sMin  = Math.max(0, r.idealMin - pad);
-  const sMax  = r.idealMax + pad;
-  const total = sMax - sMin;
-  const pct   = (v) => (v - sMin) / total * 100;
-
-  el.rangeBand.style.insetInlineStart = `${pct(r.idealMin)}%`;
-  el.rangeBand.style.width = `${pct(r.idealMax) - pct(r.idealMin)}%`;
-  el.rangeMarker.style.insetInlineStart = `${Math.min(97, Math.max(3, pct(r.weight)))}%`;
-  el.currentWeight.textContent = fmt1(r.weight);
-  el.scaleMin.textContent = `${Math.round(sMin)} kg`;
-  el.scaleMax.textContent = `${Math.round(sMax)} kg`;
-
-  el.fatMass.textContent = fmt1(r.fatMass);
-  el.muscleRatio.textContent = fmt1(r.muscleRatio);
-  el.idealRange.textContent = `${fmt1(r.idealMin)} – ${fmt1(r.idealMax)}`;
-
-  el.timeCard.dataset.state = r.mode;
-  if (r.mode === 'ok') {
-    el.timeValue.textContent = '—';
-    el.timeUnit.textContent = '';
-    el.timeSub.textContent = t.time_ok;
-  } else {
-    el.timeValue.textContent = String(r.months);
-    el.timeUnit.textContent = t.time_unit_months;
-    el.timeSub.textContent = fill(t.time_sub_weeks, { weeks: r.weeks });
-  }
-}
-
-/* =========================================================
-   Actions
-   ========================================================= */
-function updateResultsVisibility() {
-  const has = !!state.result;
-  el.empty.hidden = has;
-  el.stack.hidden = !has;
-  el.summaryBar.hidden = !has;
-}
-
-function runAnalysis(values) {
-  state.values = values;
-  state.result = analyze(values);
-  buildSummaryBar();
-  render();
-  updateResultsVisibility();
-  switchView('results', { smooth: true });
-  haptic(12);
-}
-
-function clearAll() {
-  document.activeElement?.blur?.();
-  for (const f of FIELDS) f.input.value = '';
-  $('input[name="gender"][value="female"]').checked = true;
-  clearErrors();
-
-  state.values = null;
-  state.result = null;
-
-  el.summaryBar.replaceChildren();
-  el.summaryBar.hidden = true;
-  updateResultsVisibility();
-  updateTabBadge();
-
-  switchView('input', { smooth: true });
-  haptic(10);
-}
-
-/* =========================================================
-   Events
-   ========================================================= */
-el.form.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const values = readAndValidate();
-  if (values) runAnalysis(values);
-});
-
-el.btnClear.addEventListener('click', clearAll);
-
-el.langBtn.addEventListener('click', () => {
-  haptic();
-  setLang(state.lang === 'zh' ? 'en' : 'zh');
-});
-
-el.themeToggle.addEventListener('click', () => {
-  haptic();
-  setTheme(state.theme === 'dark' ? 'light' : 'dark');
-});
-
-for (const tab of $$('.tab')) {
-  tab.addEventListener('click', () => {
-    haptic();
-    switchView(tab.dataset.tab);
-  });
-}
-
-for (const f of FIELDS) {
-  f.input.addEventListener('input', () => {
-    f.input.classList.remove('is-invalid');
-    f.input.removeAttribute('aria-invalid');
-    el.error.hidden = true;
-  });
-}
-
-el.appBody.addEventListener('scroll', () => {
-  el.appBar.classList.toggle('is-scrolled', el.appBody.scrollTop > 4);
-}, { passive: true });
-
-/* =========================================================
-   PWA
-   ========================================================= */
-function injectManifest() {
-  const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-    <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#059669"/>
-    </linearGradient></defs>
-    <rect width="512" height="512" rx="112" fill="url(#g)"/>
-    <path d="M256 384c-8 0-15-3-21-9l-96-96c-30-30-30-78 0-108s78-30 108 0l9 9 9-9c30-30 78-30 108 0s30 78 0 108l-96 96c-6 6-13 9-21 9z"
-          fill="#ffffff" opacity=".95"/>
-    <path d="M180 260h40l20-40 32 80 22-50 20 30h18"
-          stroke="#059669" stroke-width="14" fill="none"
-          stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>`;
-  const iconUrl = `data:image/svg+xml;base64,${btoa(iconSvg)}`;
-
-  const manifest = {
-    name: '智能健康分析助手', short_name: 'Health',
-    description: 'BMI 与体成分快速评估',
-    start_url: '.', scope: '.',
-    display: 'standalone', orientation: 'portrait',
-    background_color: '#0b1220', theme_color: '#10b981', lang: 'zh-CN',
-    icons: [
-      { src: iconUrl, sizes: '192x192', type: 'image/svg+xml', purpose: 'any' },
-      { src: iconUrl, sizes: '512x512', type: 'image/svg+xml', purpose: 'any maskable' },
-    ],
-  };
-
-  try {
-    const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
-    const url = URL.createObjectURL(blob);
-    $('#manifestLink')?.setAttribute('href', url);
-    $('#appleIcon')?.setAttribute('href', iconUrl);
-  } catch {}
-}
-
-let deferredPrompt = null;
-function showInstall() {
-  try { if (localStorage.getItem(KEY.install) === '1') return; } catch {}
-  el.installBanner.hidden = false;
-}
-addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  showInstall();
-});
-el.installGo?.addEventListener('click', async () => {
-  haptic();
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  await deferredPrompt.userChoice;
-  deferredPrompt = null;
-  el.installBanner.hidden = true;
-});
-el.installX?.addEventListener('click', () => {
-  el.installBanner.hidden = true;
-  try { localStorage.setItem(KEY.install, '1'); } catch {}
-});
-addEventListener('appinstalled', () => {
-  el.installBanner.hidden = true;
-  deferredPrompt = null;
-});
-
-/* =========================================================
-   Boot
-   ========================================================= */
-injectManifest();
-syncThemeButton();
-applyI18n();
-updateResultsVisibility();
-switchView('input');
+const C={H:{min:140,max:190},W:{min:.1,max:500},F:{min:1,max:75},RATE:3,BANDS:{female:[20,21.5],male:[21.5,23]},CDC:{under:18.5,over:25,obese:30},SCALE:[14,40]};
+const FM={height:{min:140,max:190,step:1,u:'cm',ok:v=>v>=140&&v<=190,k:'lbl_height'},weight:{min:1,max:500,step:.5,u:'kg',ok:v=>v>0&&v<=500,k:'lbl_weight'},bodyfat:{min:1,max:75,step:.5,u:'%',ok:v=>v>=1&&v<=75,k:'lbl_bodyfat'},muscle:{min:.1,max:500,step:.5,u:'kg',ok:v=>v>0,k:'lbl_muscle'}};
+const I={zh:{title:'智能健康分析助手',subtitle:'输入数据，精准评估',form_title:'你的身体数据',form_hint:'全部为必填',lbl_gender:'性别',lbl_female:'女性',lbl_male:'男性',lbl_height:'身高',lbl_weight:'当前体重',lbl_bodyfat:'体脂率',lbl_muscle:'肌肉量',ph_height:'165',ph_weight:'60.5',ph_bodyfat:'20.5',ph_muscle:'35.5',btn_calc:'开始分析',btn_clear:'清除数据',btn_cancel:'取消',btn_confirm:'确定',btn_edit_full:'完整编辑',edit_hint:'轻触任一数值即可修改',err_height:'请输入 140–190 之间的身高。',err_weight:'请输入有效的体重（大于 0）。',err_bodyfat:'请输入 1–75 之间的体脂率。',err_muscle:'请输入有效的肌肉量（大于 0）。',err_muscle_big:'肌肉量不能大于或等于总体重。',err_range:'请输入 {min} – {max} {unit} 之间的数值。',empty_text:'还没有数据，先去「输入」页填写吧',bmi_label:'BMI',bmi_under:'偏瘦',bmi_normal:'正常',bmi_over:'偏重',bmi_obese:'肥胖',bmi_short_under:'偏瘦',bmi_short_normal:'正常',bmi_short_over:'偏重',bmi_short_obese:'肥胖',bmi_range_under:'低于 18.5',bmi_range_normal:'18.5 – 25',bmi_range_over:'25 – 30',bmi_range_obese:'高于 30',status_lose:'需要减重',status_gain:'需要增重',status_ok:'体重达标',status_lose_sub:'当前 {w} kg，超出上限 {d} kg',status_gain_sub:'当前 {w} kg，低于下限 {d} kg',status_ok_sub:'当前 {w} kg 处于标准范围内，继续保持',range_title:'体重位置',lbl_fat_label:'体脂重量',lbl_muscle_result:'肌肉率',lbl_ideal_label:'标准体重区间',month_label:'达标所需时间',time_unit_months:'个月',time_sub_weeks:'约 {weeks} 周',time_ok:'已达标，保持即可',theme_light:'切换到浅色模式',theme_dark:'切换到深色模式',tab_input:'输入',tab_results:'分析'},en:{title:'Smart Health Analyzer',subtitle:'Accurate health assessment',form_title:'Your Body Data',form_hint:'All fields required',lbl_gender:'Gender',lbl_female:'Female',lbl_male:'Male',lbl_height:'Height',lbl_weight:'Weight',lbl_bodyfat:'Body Fat',lbl_muscle:'Muscle',ph_height:'165',ph_weight:'60.5',ph_bodyfat:'20.5',ph_muscle:'35.5',btn_calc:'Analyze',btn_clear:'Clear All',btn_cancel:'Cancel',btn_confirm:'Confirm',btn_edit_full:'Edit All',edit_hint:'Tap any value to edit',err_height:'Please enter a height between 140 and 190 cm.',err_weight:'Please enter a valid weight (greater than 0).',err_bodyfat:'Please enter a body fat percentage between 1 and 75.',err_muscle:'Please enter a valid muscle mass (greater than 0).',err_muscle_big:'Muscle mass cannot be equal to or greater than total weight.',err_range:'Enter a value between {min} and {max} {unit}.',empty_text:'No data yet — fill in the "Input" tab first',bmi_label:'BMI',bmi_under:'Underweight',bmi_normal:'Normal',bmi_over:'Overweight',bmi_obese:'Obese',bmi_short_under:'Under',bmi_short_normal:'Normal',bmi_short_over:'Over',bmi_short_obese:'Obese',bmi_range_under:'Below 18.5',bmi_range_normal:'18.5 – 25',bmi_range_over:'25 – 30',bmi_range_obese:'Above 30',status_lose:'Weight Loss Needed',status_gain:'Weight Gain Needed',status_ok:'Within Healthy Range',status_lose_sub:'Currently {w} kg — {d} kg above the upper limit',status_gain_sub:'Currently {w} kg — {d} kg below the lower limit',status_ok_sub:'Currently {w} kg — nicely within the healthy range',range_title:'Weight Position',lbl_fat_label:'Fat Mass',lbl_muscle_result:'Muscle Ratio',lbl_ideal_label:'Ideal Weight Range',month_label:'Time to Goal',time_unit_months:'months',time_sub_weeks:'≈ {weeks} weeks',time_ok:'On target — keep it up',theme_light:'Switch to light mode',theme_dark:'Switch to dark mode',tab_input:'Input',tab_results:'Results'}};
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const E={bar:$('#bar'),body:$('#body'),form:$('#form'),err:$('#err'),H:$('#height'),W:$('#weight'),F:$('#bodyfat'),M:$('#muscle'),empty:$('#empty'),stack:$('#rstk'),sbar:$('#sbar'),bh:$('#bh'),bhn:$('#bhn'),bhc:$('#bhc'),bhr:$('#bhr'),bsm:$('#bsm'),sts:$('#sts'),stt:$('#stt'),stsub:$('#stsub'),cw:$('#cw'),rb:$('#rb'),rm:$('#rm'),smin:$('#smin'),smax:$('#smax'),fm:$('#fm'),mr:$('#mr'),ir:$('#ir'),tc:$('#tc'),tv:$('#tv'),tu:$('#tu'),ts:$('#ts'),cf:$('#cf'),cm:$('#cm'),ci:$('#ci'),theme:$('#theme'),lang:$('#lang'),tabr:$('#tabr'),bdg:$('#bdg'),clear:$('#clear')};
+const S={lang:'zh',theme:document.documentElement.dataset.theme==='dark'?'dark':'light',view:'input',vals:null,res:null};
+const SM={input:0,results:0};
+try{const l=localStorage.getItem('sha-lang');if(l==='zh'||l==='en')S.lang=l}catch{}
+const f1=n=>n.toFixed(1),fr=(a,b)=>`${Number.isInteger(a)?a:f1(a)} – ${Number.isInteger(b)?b:f1(b)}`,fl=(s,v)=>s.replace(/\{(\w+)\}/g,(_,k)=>v[k]??''),hap=(p=8)=>{try{navigator.vibrate?.(p)}catch{}},shk=n=>n.animate([{translate:'0'},{translate:'-4px'},{translate:'4px'},{translate:'0'}],{duration:280,easing:'ease-in-out'});
+const idealW=(h,g)=>{const m=(h/100)**2,[a,b]=C.BANDS[g];return[a*m,b*m]};
+const cat=b=>b<C.CDC.under?'under':b<C.CDC.over?'normal':b<C.CDC.obese?'over':'obese';
+function analyze({gender,height,weight,bodyfat,muscle}){const[mn,mx]=idealW(height,gender),bmi=weight/(height/100)**2,mode=weight<mn?'gain':weight>mx?'lose':'ok',diff=mode==='gain'?mn-weight:mode==='lose'?weight-mx:0,mo=diff>0?Math.ceil(diff/C.RATE):0;return{weight,mode,diff,months:mo,weeks:mo*4,idealMin:mn,idealMax:mx,bmi,bmiCat:cat(bmi),fatMass:weight*bodyfat/100,muscleRatio:muscle/weight*100}}
+const F=[{k:'height',i:E.H,e:'err_height',ok:v=>v>=140&&v<=190},{k:'weight',i:E.W,e:'err_weight',ok:v=>v>0&&v<=500},{k:'bodyfat',i:E.F,e:'err_bodyfat',ok:v=>v>=1&&v<=75},{k:'muscle',i:E.M,e:'err_muscle',ok:v=>v>0}];
+function syncForm(){const v=S.vals;if(!v)return;const g=$(`input[name=gender][value=${v.gender}]`);if(g)g.checked=true;E.H.value=v.height;E.W.value=v.weight;E.F.value=v.bodyfat;E.M.value=v.muscle}
+function syncTheme(){const l=I[S.lang][S.theme==='dark'?'theme_light':'theme_dark'];E.theme.setAttribute('aria-label',l);E.theme.setAttribute('aria-pressed',S.theme==='dark');const m=$('meta[name=theme-color]');if(m)m.content=S.theme==='dark'?'#0b1220':'#10b981'}
+function applyI18n(){const t=I[S.lang];document.documentElement.lang=S.lang==='zh'?'zh-CN':'en';for(const n of $$('[data-i]')){const v=t[n.dataset.i];if(v!=null)n.textContent=v}for(const n of $$('[data-ph]')){const v=t[n.dataset.ph];if(v!=null)n.placeholder=v}syncTheme();if(S.vals)buildSbar()}
+function setLang(l){if(l===S.lang)return;S.lang=l;try{localStorage.setItem('sha-lang',l)}catch{}applyI18n();if(S.res)render()}
+function setTheme(t){S.theme=t;document.documentElement.dataset.theme=t;try{localStorage.setItem('sha-theme',t)}catch{}syncTheme()}
+function goView(v,sm=false){if(v===S.view)return;SM[S.view]=E.body.scrollTop;S.view=v;for(const s of $$('.view'))s.hidden=s.dataset.v!==v;for(const t of $$('.tab')){const a=t.dataset.t===v;t.classList.toggle('on',a);t.setAttribute('aria-selected',String(a))}E.bdg.hidden=!(S.res&&v!=='results');E.body.scrollTo({top:SM[v]??0,behavior:sm?'smooth':'instant'})}
+function showErr(k,inp){E.err.textContent=I[S.lang][k]??k;E.err.hidden=false;shk(E.err);hap([20,40,20]);if(inp){inp.classList.add('bad');inp.setAttribute('aria-invalid','true');inp.focus();inp.scrollIntoView({behavior:'smooth',block:'center'})}}
+function clearErr(){E.err.hidden=true;for(const f of F){f.i.classList.remove('bad');f.i.removeAttribute('aria-invalid')}}
+function readForm(){clearErr();const v={};for(const f of F){const n=parseFloat(f.i.value);v[f.k]=n;if(!Number.isFinite(n)||!f.ok(n)){showErr(f.e,f.i);return null}}if(v.muscle>=v.weight){showErr('err_muscle_big',E.M);return null}v.gender=$('input[name=gender]:checked').value;return v}
+function chipHTML(f){const t=I[S.lang],v=S.vals;if(f==='gender'){const f1s=v.gender==='female';return`<span class="ci">${f1s?'♀':'♂'}</span><span class="cl">${t.lbl_gender}</span><span class="cv">${f1s?t.lbl_female:t.lbl_male}</span>`}const m=FM[f];return`<span class="cl">${t[m.k]}</span><span class="cv">${f1(S.vals[f])}</span><span class="cu">${m.u}</span>`}
+function renderChip(chip,f){chip.classList.remove('edit');chip.innerHTML=chipHTML(f);chip.setAttribute('role','button');chip.setAttribute('tabindex','0');const t=I[S.lang];if(f==='gender')chip.setAttribute('aria-label',`${t.lbl_gender}: ${S.vals.gender==='female'?t.lbl_female:t.lbl_male}`);else{const m=FM[f];chip.setAttribute('aria-label',`${t[m.k]}: ${f1(S.vals[f])} ${m.u}`)}}
+function buildSbar(){if(!S.vals){E.sbar.replaceChildren();E.sbar.hidden=true;return}const t=I[S.lang],fr2=document.createDocumentFragment();const h=document.createElement('p');h.className='shint';h.innerHTML=`<svg viewBox="0 0 24 24"><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg><span>${t.edit_hint}</span>`;fr2.append(h);for(const f of['gender','height','weight','bodyfat','muscle']){const c=document.createElement('span');c.className='chip';c.dataset.f=f;renderChip(c,f);fr2.append(c)}const ea=document.createElement('span');ea.className='chip act';ea.dataset.a='edit';ea.setAttribute('role','button');ea.setAttribute('tabindex','0');ea.setAttribute('aria-label',t.btn_edit_full);ea.innerHTML=`<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg><span>${t.btn_edit_full}</span>`;fr2.append(ea);E.sbar.replaceChildren(fr2);E.sbar.hidden=false}
+function openEditor(chip,f){if(chip.classList.contains('edit'))return;const t=I[S.lang],m=FM[f],cur=S.vals[f];chip.classList.add('edit');chip.removeAttribute('role');chip.removeAttribute('tabindex');chip.setAttribute('aria-label',`${t[m.k]}: ${cur} ${m.u}`);
+chip.innerHTML=`<div class="ed" role="group"><div class="edh"><span class="edl">${t[m.k]}</span><span class="edr">${fr(m.min,m.max)} ${m.u}</span></div><div class="edf"><button type="button" class="eds" data-s="-1" aria-label="Decrease">−</button><input class="edi" type="number" inputmode="decimal" step="${m.step}" min="${m.min}" max="${m.max}" value="${cur}" aria-label="${t[m.k]}"><span class="edu">${m.u}</span><button type="button" class="eds" data-s="1" aria-label="Increase">+</button></div><p class="ede" hidden></p><div class="eda"><button type="button" class="edb g" data-a="cancel">${t.btn_cancel}</button><button type="button" class="edb p" data-a="confirm">${t.btn_confirm}</button></div></div>`;
+const inp=chip.querySelector('.edi'),er=chip.querySelector('.ede');requestAnimationFrame(()=>{inp.focus();inp.select()});let done=false;
+const val=()=>{const n=parseFloat(inp.value);if(!Number.isFinite(n)||!m.ok(n)){er.textContent=fl(t.err_range,{min:m.min,max:m.max,unit:m.u});er.hidden=false;inp.classList.add('bad');shk(chip);hap([20,30,20]);return null}if(f==='muscle'&&n>=S.vals.weight){er.textContent=t.err_muscle_big;er.hidden=false;inp.classList.add('bad');shk(chip);hap([20,30,20]);return null}er.hidden=true;inp.classList.remove('bad');return n};
+const commit=()=>{if(done)return false;const n=val();if(n==null)return false;done=true;S.vals={...S.vals,[f]:n};syncForm();S.res=analyze(S.vals);render();renderChip(E.sbar.querySelector(`.chip[data-f="${f}"]`),f);pulse(f);hap(10);return true};
+const cancel=()=>{if(done)return;done=true;renderChip(chip,f);hap(6)};
+chip.querySelector('[data-a=confirm]').addEventListener('click',commit);chip.querySelector('[data-a=cancel]').addEventListener('click',cancel);
+chip.querySelectorAll('.eds').forEach(b=>b.addEventListener('click',()=>{const d=Number(b.dataset.s),st=m.step||1,cu=parseFloat(inp.value),ba=Number.isFinite(cu)?cu:0;let nx=ba+d*st;nx=Math.round(nx*100)/100;nx=Math.min(m.max,Math.max(m.min,nx));inp.value=String(nx);inp.classList.remove('bad');er.hidden=true;hap(5)}));
+inp.addEventListener('input',()=>{inp.classList.remove('bad');er.hidden=true});
+inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();commit()}else if(e.key==='Escape'){e.preventDefault();cancel()}});
+const outside=e=>{if(!chip.contains(e.target)){cancel();document.removeEventListener('pointerdown',outside,true)}};setTimeout(()=>document.addEventListener('pointerdown',outside,true),0)}
+function pulse(f){const c=f==='bodyfat'?E.cf:f==='muscle'?E.cm:f==='weight'?E.ci:null;if(!c)return;c.classList.remove('pulse');void c.offsetWidth;c.classList.add('pulse')}
+function render(){const r=S.res;if(!r)return;const t=I[S.lang];E.bh.dataset.cat=r.bmiCat;E.bhn.textContent=f1(r.bmi);E.bhc.textContent=t[`bmi_${r.bmiCat}`];E.bhr.textContent=t[`bmi_range_${r.bmiCat}`];const[s0,s1]=C.SCALE,bp=Math.min(97,Math.max(3,(r.bmi-s0)/(s1-s0)*100));E.bsm.style.left=`${bp}%`;E.sts.dataset.s=r.mode;E.stt.textContent=t[`status_${r.mode}`];E.stsub.textContent=fl(t[`status_${r.mode}_sub`],{w:f1(r.weight),d:f1(r.diff)});const sp=Math.max(r.idealMax-r.idealMin,4),pd=sp*1.2,smi=Math.max(0,r.idealMin-pd),sma=r.idealMax+pd,tt=sma-smi,pct=v=>(v-smi)/tt*100;E.rb.style.left=`${pct(r.idealMin)}%`;E.rb.style.width=`${pct(r.idealMax)-pct(r.idealMin)}%`;E.rm.style.left=`${Math.min(97,Math.max(3,pct(r.weight)))}%`;E.cw.textContent=f1(r.weight);E.smin.textContent=`${Math.round(smi)} kg`;E.smax.textContent=`${Math.round(sma)} kg`;E.fm.textContent=f1(r.fatMass);E.mr.textContent=f1(r.muscleRatio);E.ir.textContent=`${f1(r.idealMin)} – ${f1(r.idealMax)}`;E.tc.dataset.s=r.mode;if(r.mode==='ok'){E.tv.textContent='—';E.tu.textContent='';E.ts.textContent=t.time_ok}else{E.tv.textContent=String(r.months);E.tu.textContent=t.time_unit_months;E.ts.textContent=fl(t.time_sub_weeks,{weeks:r.weeks})}}
+function updateVis(){const h=!!S.res;E.empty.hidden=h;E.stack.hidden=!h;E.sbar.hidden=!h}
+function run(){S.res=analyze(S.vals);buildSbar();render();updateVis();goView('results',true);hap(12)}
+function clearAll(){document.activeElement?.blur?.();for(const f of F)f.i.value='';$('input[name=gender][value=female]').checked=true;clearErr();S.vals=null;S.res=null;E.sbar.replaceChildren();E.sbar.hidden=true;updateVis();E.bdg.hidden=true;goView('input',true);hap(10)}
+function activateChip(c){if(!c)return;const a=c.dataset.a;if(a==='edit'){hap();goView('input',true);return}const f=c.dataset.f;if(!f)return;if(f==='gender'){hap();S.vals={...S.vals,gender:S.vals.gender==='female'?'male':'female'};syncForm();S.res=analyze(S.vals);render();renderChip(c,'gender');hap(8);return}openEditor(c,f)}
+E.sbar.addEventListener('click',e=>{if(e.target.closest('.ed'))return;const c=e.target.closest('.chip');if(c)activateChip(c)});
+E.sbar.addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const c=e.target.closest('.chip');if(!c||e.target.closest('.ed'))return;e.preventDefault();activateChip(c)});
+E.form.addEventListener('submit',e=>{e.preventDefault();const v=readForm();if(v){S.vals=v;run()}});
+E.clear.addEventListener('click',clearAll);
+E.lang.addEventListener('click',()=>{hap();setLang(S.lang==='zh'?'en':'zh')});
+E.theme.addEventListener('click',()=>{hap();setTheme(S.theme==='dark'?'light':'dark')});
+for(const t of $$('.tab'))t.addEventListener('click',()=>{hap();goView(t.dataset.t)});
+for(const f of F)f.i.addEventListener('input',()=>{f.i.classList.remove('bad');f.i.removeAttribute('aria-invalid');E.err.hidden=true});
+E.body.addEventListener('scroll',()=>E.bar.classList.toggle('sc',E.body.scrollTop>4),{passive:true});
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+syncTheme();applyI18n();updateVis();goView('input');
 </script>
 </body>
 </html>
