@@ -1,5 +1,5 @@
 const CACHE = 'health-v1';
-const ASSETS = ['./Smart-Health-Analyzer/', './Smart-Health-Analyzer/index.html', './Smart-Health-Analyzer/manifest.json'];
+const ASSETS = ['/Smart-Health-Analyzer/', '/Smart-Health-Analyzer/index.html', '/Smart-Health-Analyzer/manifest.json'];
 
 self.addEventListener('install', (e) =>
   e.waitUntil(
