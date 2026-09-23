@@ -4,7 +4,7 @@
   "description": "BMI 与体成分快速评估",
   "lang": "zh-CN",
   "dir": "ltr",
-  "start_url": "/hoongwai1004.github.io/Smart-Health-Analyzer/",
+  "start_url": "/Smart-Health-Analyzer/",
   "scope": "/hoongwai1004.github.io/Smart-Health-Analyzer/",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
