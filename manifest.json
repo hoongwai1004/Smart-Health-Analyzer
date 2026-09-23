@@ -5,7 +5,7 @@
   "lang": "zh-CN",
   "dir": "ltr",
   "start_url": "/Smart-Health-Analyzer/",
-  "scope": "/hoongwai1004.github.io/Smart-Health-Analyzer/",
+  "scope": "/Smart-Health-Analyzer/",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait",
