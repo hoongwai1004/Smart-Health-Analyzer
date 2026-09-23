@@ -5,16 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="color-scheme" content="light dark">
 <meta name="description" content="输入身高、体重、体脂率与肌肉量，快速评估体重状态与达标时间。">
-<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#10b981">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Health">
 <meta name="format-detection" content="telephone=no">
 
 <!-- ===== 图标（内联 SVG，避免额外请求） ===== -->
-<link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2334d399'/%3E%3Cstop offset='1' stop-color='%23059669'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='url(%23g)'/%3E%3Cpath d='M256 384c-8 0-15-3-21-9l-96-96c-30-30-30-78 0-108s78-30 108 0l9 9 9-9c30-30 78-30 108 0s30 78 0 108l-96 96c-6 6-13 9-21 9z' fill='%23ffffff' opacity='.95'/%3E%3C/svg%3E">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2334d399'/%3E%3Cstop offset='1' stop-color='%23059669'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='url(%23g)'/%3E%3Cpath d='M256 384c-8 0-15-3-21-9l-96-96c-30-30-30-78 0-108s78-30 108 0l9 9 9-9c30-30 78-30 108 0s30 78 0 108l-96 96c-6 6-13 9-21 9z' fill='%23ffffff' opacity='.95'/%3E%3C/svg%3E">
 
 <title>智能健康分析助手 · Smart Health Analyzer</title>
@@ -2358,13 +2352,6 @@ for (const key of FIELD_ORDER) {
 dom.body.addEventListener('scroll', () => {
   dom.bar.classList.toggle('sc', dom.body.scrollTop > 4);
 }, { passive: true });
-
-/* --- Service Worker（离线缓存） --- */
-if ('serviceWorker' in navigator) {
-  addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
-  });
-}
 
 
 /* ================================================================
