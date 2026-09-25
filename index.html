@@ -778,11 +778,11 @@
   .edb.p:active { filter: brightness(.95); }
 
   /* ---------------------------------------------------------
-   * 2.9 BMI 大卡片
+   * 2.9 BMI 卡片（紧凑版：只求「一眼看清」）
    * ------------------------------------------------------- */
   .bh {
-    padding: 18px;
-    border-radius: var(--rL);
+    padding: 14px 16px;
+    border-radius: var(--rM);
     border: 1px solid transparent;
     transition: background .3s, color .3s;
   }
@@ -793,38 +793,37 @@
 
   .bhh {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
-    gap: 14px;
-    margin-bottom: 16px;
+    gap: 12px;
+    margin-bottom: 10px;
   }
   .bhl {
-    font-size: 10.5px;
+    font-size: 10px;
     font-weight: 800;
-    letter-spacing: .1em;
+    letter-spacing: .09em;
     text-transform: uppercase;
     opacity: .85;
   }
   .bhn {
-    font-size: 46px;
+    font-size: 34px;
     font-weight: 900;
     line-height: 1;
-    letter-spacing: -.045em;
+    letter-spacing: -.04em;
     font-variant-numeric: tabular-nums;
   }
   .bhc {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 2px;
+    gap: 1px;
     text-align: right;
-    padding-bottom: 4px;
   }
-  .bhc strong { font-size: 17px; font-weight: 800; letter-spacing: -.015em; }
-  .bhc span   { font-size: 11.5px; font-weight: 700; opacity: .8; font-variant-numeric: tabular-nums; }
+  .bhc strong { font-size: 14.5px; font-weight: 800; letter-spacing: -.015em; }
+  .bhc span   { font-size: 11px; font-weight: 700; opacity: .8; font-variant-numeric: tabular-nums; }
 
   /* BMI 刻度条 */
-  .bst { position: relative; display: flex; height: 9px; border-radius: 999px; }
+  .bst { position: relative; display: flex; height: 8px; border-radius: 999px; }
 
   .bss { height: 100%; }
   .bss:first-child { border-radius: 999px 0 0 999px; }
@@ -839,11 +838,11 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     background: currentColor;
-    border: 3px solid var(--card);
+    border: 2.5px solid var(--card);
     translate: -50% -50%;
     box-shadow: 0 2px 8px rgba(0, 0, 0, .28);
     z-index: 2;
@@ -852,8 +851,8 @@
 
   .bsl {
     display: flex;
-    margin-top: 8px;
-    font-size: 10.5px;
+    margin-top: 7px;
+    font-size: 10px;
     font-weight: 800;
     opacity: .82;
   }
@@ -868,13 +867,13 @@
   .bsl span:nth-child(4) { flex: 10; }
 
   /* ---------------------------------------------------------
-   * 2.10 状态条（减重 / 增重 / 达标）
+   * 2.10 状态条（放大版：突出「要增减多少公斤」）
    * ------------------------------------------------------- */
   .sts {
     display: flex;
     align-items: center;
-    gap: 13px;
-    padding: 15px;
+    gap: 14px;
+    padding: 17px 18px;
     border-radius: var(--rL);
     border: 1.5px solid transparent;
     transition: var(--tr);
@@ -887,14 +886,14 @@
     flex: none;
     display: grid;
     place-items: center;
-    width: 38px;
-    height: 38px;
+    width: 46px;
+    height: 46px;
     border-radius: 50%;
     background: currentColor;
   }
   .sti svg {
-    width: 19px;
-    height: 19px;
+    width: 23px;
+    height: 23px;
     stroke: var(--card);
     stroke-width: 2.6;
     stroke-linecap: round;
@@ -913,9 +912,47 @@
     flex-direction: column;
     gap: 3px;
     min-width: 0;
+    flex: 1 1 auto;
   }
-  .stt strong { font-size: 16.5px; font-weight: 800; letter-spacing: -.01em; }
-  .stt span   { font-size: 12.5px; font-weight: 600; opacity: .9; line-height: 1.4; }
+  .stt strong {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -.01em;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+  .stt span {
+    font-size: 12px;
+    font-weight: 600;
+    opacity: .88;
+    line-height: 1.4;
+  }
+
+  /* 大号数值：需要增/减的公斤数 */
+  .std {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    margin-left: auto;
+    padding-left: 8px;
+    text-align: right;
+  }
+  .stdn {
+    font-size: 34px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -.045em;
+    font-variant-numeric: tabular-nums;
+  }
+  .stdu {
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    opacity: .68;
+  }
 
   /* ---------------------------------------------------------
    * 2.11 体重位置滑轨
@@ -1042,12 +1079,20 @@
  * ============================================================ */
 @layer resp {
 
-  /* 超窄屏：单列布局 */
+  /* 超窄屏：单列布局 + 进一步压缩 */
   @media (max-width: 359px) {
     .g2 { grid-template-columns: 1fr; }
     .mv { font-size: 23px; }
-    .bhn { font-size: 40px; }
-    .bhc strong { font-size: 15.5px; }
+
+    .bhn { font-size: 30px; }
+    .bhc strong { font-size: 13.5px; }
+
+    .sts { padding: 14px; gap: 11px; }
+    .sti { width: 40px; height: 40px; }
+    .sti svg { width: 20px; height: 20px; }
+    .stt strong { font-size: 14px; }
+    .stdn { font-size: 27px; }
+
     .edi { font-size: 20px; }
     .eds { width: 38px; }
   }
@@ -1215,7 +1260,7 @@
       <!-- 结果堆栈 -->
       <div class="rstk" id="rstk" hidden>
 
-        <!-- BMI 大卡片 -->
+        <!-- BMI 大卡片（紧凑） -->
         <div class="bh" id="bh" data-cat="normal">
           <div class="bhh">
             <div>
@@ -1244,7 +1289,7 @@
           </div>
         </div>
 
-        <!-- 状态条 -->
+        <!-- 状态条（放大：突出增减公斤数） -->
         <div class="sts" id="sts" data-s="ok">
           <div class="sti">
             <svg viewBox="0 0 24 24">
@@ -1256,6 +1301,10 @@
           <div class="stt">
             <strong id="stt">—</strong>
             <span id="stsub">—</span>
+          </div>
+          <div class="std" id="std" hidden>
+            <span class="stdn" id="stdn">0.0</span>
+            <span class="stdu" id="stdu">kg</span>
           </div>
         </div>
 
@@ -1363,10 +1412,16 @@ const CONFIG = {
   /** 每月可减/增的体重（kg） */
   ratePerMonth: 3,
 
-  /** 标准体重对应的 BMI 区间（按性别） */
+  /**
+   * 标准体重对应的 BMI 区间（按性别）
+   *
+   * 区间收窄 + 下移，让判定更严格：
+   *   · 上限降低 → 需要减掉的 kg 更多
+   *   · 下限抬高 → 需要增加的 kg 更多
+   */
   idealBmiBands: {
-    female: [20, 21.5],
-    male:   [21.5, 23],
+    female: [20.5, 21],
+    male:   [22, 22.5],
   },
 
   /** BMI 分级阈值（CDC 标准） */
@@ -1469,8 +1524,8 @@ const I18N = {
     status_lose: '需要减重',
     status_gain: '需要增重',
     status_ok: '体重达标',
-    status_lose_sub: '当前 {w} kg，超出上限 {d} kg',
-    status_gain_sub: '当前 {w} kg，低于下限 {d} kg',
+    status_lose_sub: '超出标准体重上限',
+    status_gain_sub: '低于标准体重下限',
     status_ok_sub: '当前 {w} kg 处于标准范围内，继续保持',
 
     // 结果卡片
@@ -1541,8 +1596,8 @@ const I18N = {
     status_lose: 'Weight Loss Needed',
     status_gain: 'Weight Gain Needed',
     status_ok: 'Within Healthy Range',
-    status_lose_sub: 'Currently {w} kg — {d} kg above the upper limit',
-    status_gain_sub: 'Currently {w} kg — {d} kg below the lower limit',
+    status_lose_sub: 'Above the healthy upper limit',
+    status_gain_sub: 'Below the healthy lower limit',
     status_ok_sub: 'Currently {w} kg — nicely within the healthy range',
 
     range_title: 'Weight Position',
@@ -1601,6 +1656,9 @@ const dom = {
   sts:   $('#sts'),
   stt:   $('#stt'),
   stsub: $('#stsub'),
+  std:   $('#std'),
+  stdn:  $('#stdn'),
+  stdu:  $('#stdu'),
 
   // 滑轨
   cw:   $('#cw'),
@@ -1846,6 +1904,15 @@ function render() {
     w: fmt1(r.weight),
     d: fmt1(r.diff),
   });
+
+  // 大号数字：只有需要增减时才显示
+  if (r.mode === 'ok') {
+    dom.std.hidden = true;
+  } else {
+    dom.std.hidden = false;
+    dom.stdn.textContent = fmt1(r.diff);
+    dom.stdu.textContent = 'kg';
+  }
 
   /* --- 体重位置滑轨 --- */
   const span = Math.max(r.idealMax - r.idealMin, 4);
