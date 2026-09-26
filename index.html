@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<!-- ═══════════════════════════════════════════════════════════
+     HEAD · 元信息
+     ═══════════════════════════════════════════════════════════ -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="color-scheme" content="light dark">
@@ -8,12 +11,14 @@
 <meta name="theme-color" content="#10b981">
 <meta name="format-detection" content="telephone=no">
 
-<!-- ===== 图标（内联 SVG，避免额外请求） ===== -->
+<!-- 内联 SVG 图标（避免额外请求） -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2334d399'/%3E%3Cstop offset='1' stop-color='%23059669'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='url(%23g)'/%3E%3Cpath d='M256 384c-8 0-15-3-21-9l-96-96c-30-30-30-78 0-108s78-30 108 0l9 9 9-9c30-30 78-30 108 0s30 78 0 108l-96 96c-6 6-13 9-21 9z' fill='%23ffffff' opacity='.95'/%3E%3C/svg%3E">
 
 <title>智能健康分析助手 · Smart Health Analyzer</title>
 
-<!-- ===== 首屏主题预设：避免深色模式闪白 ===== -->
+<!-- ═══════════════════════════════════════════════════════════
+     HEAD · 首屏主题预设（避免深色模式闪白）
+     ═══════════════════════════════════════════════════════════ -->
 <script>
 (() => {
   let theme = 'light';
@@ -27,22 +32,30 @@
 })();
 </script>
 
+<!-- ═══════════════════════════════════════════════════════════
+     STYLE
+     ───────────────────────────────────────────────────────────
+     分层结构：
+       @layer base  ——  设计变量 & 全局重置
+       @layer ui    ——  组件样式
+       @layer resp  ——  响应式适配
+     ═══════════════════════════════════════════════════════════ -->
 <style>
-/* ============================================================
- * 样式分层：base（基础/变量） → ui（组件） → resp（响应式）
- * ============================================================ */
 @layer base, ui, resp;
 
 
 /* ============================================================
- * 1. BASE —— 设计变量与全局重置
+ * @layer base · 设计变量与全局重置
  * ============================================================ */
 @layer base {
 
+  /* ----------------------------------------------------------
+   * B-1  设计令牌（Design Tokens）
+   * -------------------------------------------------------- */
   :root {
     color-scheme: light dark;
 
-    /* --- 背景 / 卡片 / 文字 --- */
+    /* —— 背景 / 卡片 / 文字 —— */
     --bg:    light-dark(#eef1f6, #0b1220);
     --card:  light-dark(#ffffff, #131c2b);
     --card2: light-dark(#f6f8fb, #1a2434);
@@ -51,21 +64,21 @@
     --mut:   light-dark(#64748b, #93a3b8);
     --nav:   light-dark(rgba(255, 255, 255, .88), rgba(19, 28, 43, .92));
 
-    /* --- 主题色（绿） --- */
+    /* —— 主题色（绿） —— */
     --br:   light-dark(#10b981, #34d399);   /* 主色 */
     --brS:  light-dark(#10b981, #059669);   /* 实心按钮底色 */
-    --brI:  light-dark(#047857, #6ee7b7);   /* 文字/图标色 */
+    --brI:  light-dark(#047857, #6ee7b7);   /* 文字 / 图标色 */
     --brSf: light-dark(#e8f8f1, #0c2b22);   /* 浅色填充 */
     --brR:  light-dark(rgba(16, 185, 129, .18), rgba(52, 211, 153, .2));  /* 光环 */
     --brG:  light-dark(rgba(16, 185, 129, .35), rgba(5, 150, 105, .45));  /* 投影 */
 
-    /* --- 危险色（红） --- */
+    /* —— 危险色（红） —— */
     --dg:   light-dark(#ef4444, #f87171);
     --dgI:  light-dark(#b91c1c, #fca5a5);
     --dgSf: light-dark(#fee2e2, #3a1416);
     --dgR:  light-dark(rgba(239, 68, 68, .15), rgba(248, 113, 113, .2));
 
-    /* --- 辅助色：蓝 / 紫 / 琥珀 / 青 --- */
+    /* —— 辅助色：蓝 / 紫 / 琥珀 / 青 —— */
     --inI:  light-dark(#1d4ed8, #93c5fd);
     --inSf: light-dark(#dbeafe, #13233d);
     --viI:  light-dark(#6d28d9, #c4b5fd);
@@ -75,17 +88,17 @@
     --cyI:  light-dark(#0e7490, #67e8f9);
     --cySf: light-dark(#cffafe, #0a2b33);
 
-    /* --- 阴影 --- */
+    /* —— 阴影 —— */
     --sh: 0 1px 2px light-dark(rgba(15, 23, 42, .04), rgba(0, 0, 0, .4)),
           0 10px 30px -14px light-dark(rgba(15, 23, 42, .22), rgba(0, 0, 0, .7));
 
-    /* --- 安全区 --- */
+    /* —— 安全区 —— */
     --st: env(safe-area-inset-top, 0);
     --sb: env(safe-area-inset-bottom, 0);
     --sl: env(safe-area-inset-left, 0);
     --sr: env(safe-area-inset-right, 0);
 
-    /* --- 尺寸 / 圆角 / 动画 --- */
+    /* —— 尺寸 / 圆角 / 动画 —— */
     --ab: 56px;   /* 顶栏高度 */
     --tb: 60px;   /* 底部标签栏高度 */
     --rL: 20px;
@@ -101,7 +114,9 @@
   :root[data-theme=light] { color-scheme: light; }
   :root[data-theme=dark]  { color-scheme: dark;  }
 
-  /* --- 重置 --- */
+  /* ----------------------------------------------------------
+   * B-2  全局重置
+   * -------------------------------------------------------- */
   *, *::before, *::after { box-sizing: border-box; }
 
   html { -webkit-text-size-adjust: 100%; }
@@ -161,13 +176,13 @@
 
 
 /* ============================================================
- * 2. UI —— 组件样式
+ * @layer ui · 组件样式
  * ============================================================ */
 @layer ui {
 
-  /* ---------------------------------------------------------
-   * 2.1 应用骨架
-   * ------------------------------------------------------- */
+  /* ==========================================================
+   * U-01  应用骨架
+   * ======================================================== */
   .app {
     display: grid;
     grid-template-rows: auto 1fr auto;
@@ -177,9 +192,9 @@
     background: var(--bg);
   }
 
-  /* ---------------------------------------------------------
-   * 2.2 顶栏
-   * ------------------------------------------------------- */
+  /* ==========================================================
+   * U-02  顶栏
+   * ======================================================== */
   .bar {
     position: sticky;
     top: 0;
@@ -270,9 +285,9 @@
   :root[data-theme=dark] .isun  { display: block; }
   :root[data-theme=dark] .imoon { display: none; }
 
-  /* ---------------------------------------------------------
-   * 2.3 滚动区 & 视图
-   * ------------------------------------------------------- */
+  /* ==========================================================
+   * U-03  滚动区与视图
+   * ======================================================== */
   .body {
     position: relative;
     overflow-y: auto;
@@ -293,9 +308,9 @@
     to   { opacity: 1; translate: 0 0;   }
   }
 
-  /* ---------------------------------------------------------
-   * 2.4 底部标签栏
-   * ------------------------------------------------------- */
+  /* ==========================================================
+   * U-04  底部标签栏
+   * ======================================================== */
   .tabs {
     position: sticky;
     bottom: 0;
@@ -349,9 +364,9 @@
     box-shadow: 0 0 0 2px var(--nav);
   }
 
-  /* ---------------------------------------------------------
-   * 2.5 卡片 / 表单
-   * ------------------------------------------------------- */
+  /* ==========================================================
+   * U-05  卡片与表单
+   * ======================================================== */
   .card {
     background: var(--card);
     border: 1px solid var(--line);
@@ -479,9 +494,9 @@
     box-shadow: inset 0 0 0 1.5px var(--br);
   }
 
-  /* ---------------------------------------------------------
-   * 2.6 按钮
-   * ------------------------------------------------------- */
+  /* ==========================================================
+   * U-06  按钮
+   * ======================================================== */
   .acts {
     display: flex;
     flex-direction: column;
@@ -521,9 +536,9 @@
     background: var(--dgSf);
   }
 
-  /* ---------------------------------------------------------
-   * 2.7 空状态
-   * ------------------------------------------------------- */
+  /* ==========================================================
+   * U-07  空状态
+   * ======================================================== */
   .empty {
     display: flex;
     flex-direction: column;
@@ -543,12 +558,14 @@
     text-wrap: pretty;
   }
 
-  /* ---------------------------------------------------------
-   * 2.8 结果区容器
-   * ------------------------------------------------------- */
+  /* ==========================================================
+   * U-08  结果区容器
+   * ======================================================== */
   .rstk { display: flex; flex-direction: column; gap: 12px; }
 
-  /* --- 数值胶囊条（可点击编辑） --- */
+  /* ----------------------------------------------------------
+   * U-09  数值胶囊条（可点击内联编辑）
+   * -------------------------------------------------------- */
   .sbar {
     display: flex;
     flex-wrap: wrap;
@@ -603,7 +620,7 @@
   }
   .chip:active { transform: scale(.97); }
 
-  /* 右侧小圆点提示可点击 */
+  /* 右侧小圆点：提示可点击 */
   .chip::after {
     content: "";
     display: inline-block;
@@ -644,7 +661,7 @@
   .cv { font-size: 13.5px; font-weight: 800; color: var(--tx); }
   .cu { font-size: 11px; font-weight: 700; color: var(--mut); margin-left: -1px; }
 
-  /* 「完整编辑」按钮样式 */
+  /* 「完整编辑」按钮 */
   .chip.act {
     background: transparent;
     border-style: dashed;
@@ -662,7 +679,9 @@
   }
   .chip.act::after { display: none; }
 
-  /* --- 内联编辑器 --- */
+  /* ----------------------------------------------------------
+   * U-10  内联编辑器
+   * -------------------------------------------------------- */
   .ed {
     display: flex;
     flex-direction: column;
@@ -777,9 +796,9 @@
   .edb.p:hover  { filter: brightness(1.07); }
   .edb.p:active { filter: brightness(.95); }
 
-  /* ---------------------------------------------------------
-   * 2.9 BMI 卡片（紧凑版：只求「一眼看清」）
-   * ------------------------------------------------------- */
+  /* ----------------------------------------------------------
+   * U-11  BMI 卡片（紧凑版：只求「一眼看清」）
+   * -------------------------------------------------------- */
   .bh {
     padding: 14px 16px;
     border-radius: var(--rM);
@@ -866,9 +885,9 @@
   .bsl span:nth-child(3) { flex: 5; }
   .bsl span:nth-child(4) { flex: 10; }
 
-  /* ---------------------------------------------------------
-   * 2.10 状态条（放大版：突出「要增减多少公斤」）
-   * ------------------------------------------------------- */
+  /* ----------------------------------------------------------
+   * U-12  状态条（放大版：突出「要增减多少公斤」）
+   * -------------------------------------------------------- */
   .sts {
     display: flex;
     align-items: center;
@@ -928,7 +947,7 @@
     line-height: 1.4;
   }
 
-  /* 大号数值：需要增/减的公斤数 */
+  /* 大号数值：需要增 / 减的公斤数 */
   .std {
     flex: none;
     display: flex;
@@ -954,9 +973,9 @@
     opacity: .68;
   }
 
-  /* ---------------------------------------------------------
-   * 2.11 体重位置滑轨
-   * ------------------------------------------------------- */
+  /* ----------------------------------------------------------
+   * U-13  体重位置滑轨
+   * -------------------------------------------------------- */
   .rh {
     display: flex;
     align-items: baseline;
@@ -1006,9 +1025,9 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* ---------------------------------------------------------
-   * 2.12 指标网格
-   * ------------------------------------------------------- */
+  /* ----------------------------------------------------------
+   * U-14  指标网格
+   * -------------------------------------------------------- */
   .mt { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
   .m {
@@ -1075,7 +1094,7 @@
 
 
 /* ============================================================
- * 3. RESP —— 响应式适配
+ * @layer resp · 响应式适配
  * ============================================================ */
 @layer resp {
 
@@ -1112,12 +1131,13 @@
 </style>
 </head>
 
+
 <body>
 <div class="app">
 
-  <!-- ==========================================================
-       顶栏
-       ========================================================== -->
+  <!-- ═════════════════════════════════════════════════════════
+       VIEW · 顶栏
+       ═════════════════════════════════════════════════════════ -->
   <header class="bar" id="bar">
     <div class="brand">
       <div class="bmark">
@@ -1133,6 +1153,7 @@
     </div>
 
     <div class="bacts">
+      <!-- 语言切换 -->
       <button type="button" class="ibtn" id="lang" aria-label="Switch language">
         <svg viewBox="0 0 24 24">
           <circle cx="12" cy="12" r="9"/>
@@ -1140,6 +1161,7 @@
         </svg>
       </button>
 
+      <!-- 主题切换 -->
       <button type="button" class="ibtn" id="theme" aria-label="Toggle theme" aria-pressed="false">
         <svg class="imoon" viewBox="0 0 24 24">
           <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
@@ -1152,12 +1174,14 @@
     </div>
   </header>
 
-  <!-- ==========================================================
-       主体滚动区
-       ========================================================== -->
+  <!-- ═════════════════════════════════════════════════════════
+       VIEW · 主体滚动区
+       ═════════════════════════════════════════════════════════ -->
   <main class="body" id="body">
 
-    <!-- ---------- 视图 1：输入 ---------- -->
+    <!-- ------------------------------------------------------
+         V-1  输入视图
+         ------------------------------------------------------ -->
     <section class="view" data-v="input">
       <div class="card">
         <form class="form" id="form" novalidate>
@@ -1241,7 +1265,9 @@
       </div>
     </section>
 
-    <!-- ---------- 视图 2：分析结果 ---------- -->
+    <!-- ------------------------------------------------------
+         V-2  分析结果视图
+         ------------------------------------------------------ -->
     <section class="view" data-v="results" hidden aria-live="polite">
 
       <!-- 数据胶囊条（可点击内联编辑） -->
@@ -1260,7 +1286,7 @@
       <!-- 结果堆栈 -->
       <div class="rstk" id="rstk" hidden>
 
-        <!-- BMI 大卡片（紧凑） -->
+        <!-- R-1  BMI 大卡片（紧凑） -->
         <div class="bh" id="bh" data-cat="normal">
           <div class="bhh">
             <div>
@@ -1289,7 +1315,7 @@
           </div>
         </div>
 
-        <!-- 状态条（放大：突出增减公斤数） -->
+        <!-- R-2  状态条（突出增减公斤数） -->
         <div class="sts" id="sts" data-s="ok">
           <div class="sti">
             <svg viewBox="0 0 24 24">
@@ -1308,7 +1334,7 @@
           </div>
         </div>
 
-        <!-- 体重位置滑轨 -->
+        <!-- R-3  体重位置滑轨 -->
         <div class="card">
           <div class="rh">
             <span class="rt" data-i="range_title">体重位置</span>
@@ -1324,7 +1350,7 @@
           </div>
         </div>
 
-        <!-- 指标网格 -->
+        <!-- R-4  指标网格 -->
         <div class="mt">
           <div class="m v" id="cf">
             <span class="ml" data-i="lbl_fat_label">体脂重量</span>
@@ -1352,9 +1378,9 @@
     </section>
   </main>
 
-  <!-- ==========================================================
-       底部标签栏
-       ========================================================== -->
+  <!-- ═════════════════════════════════════════════════════════
+       VIEW · 底部标签栏
+       ═════════════════════════════════════════════════════════ -->
   <nav class="tabs" role="tablist">
     <button class="tab on" data-t="input" role="tab" aria-selected="true">
       <svg viewBox="0 0 24 24">
@@ -1376,29 +1402,22 @@
 
 </div>
 
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCRIPT
+     ───────────────────────────────────────────────────────────
+     §1  配置常量          §7   表单校验
+     §2  文案（i18n）       §8   结果渲染
+     §3  DOM 引用          §9   胶囊条 & 内联编辑
+     §4  应用状态          §10  视图 / 主题 / 语言
+     §5  工具函数          §11  事件绑定
+     §6  业务计算          §12  初始化
+     ═══════════════════════════════════════════════════════════ -->
 <script type="module">
-/* ================================================================
- * 智能健康分析助手 —— 脚本
- *
- * 目录：
- *   1. 配置常量
- *   2. 文案（i18n）
- *   3. DOM 引用
- *   4. 应用状态
- *   5. 工具函数
- *   6. 业务计算
- *   7. 表单校验
- *   8. 结果渲染
- *   9. 数据胶囊条 & 内联编辑
- *  10. 视图 / 主题 / 语言
- *  11. 事件绑定
- *  12. 初始化
- * ================================================================ */
 
-
-/* ================================================================
- * 1. 配置常量
- * ================================================================ */
+/* ============================================================
+ * § 1  配置常量
+ * ============================================================ */
 
 /** 全局业务参数：改这里就能调整判定标准 */
 const CONFIG = {
@@ -1409,7 +1428,7 @@ const CONFIG = {
     bodyfat: { min: 1,   max: 75  },
   },
 
-  /** 每月可减/增的体重（kg） */
+  /** 每月可减 / 增的体重（kg） */
   ratePerMonth: 3,
 
   /**
@@ -1459,179 +1478,188 @@ const FIELD_META = {
 const FIELD_ORDER = ['height', 'weight', 'bodyfat', 'muscle'];
 
 
-/* ================================================================
- * 2. 文案（i18n）
- * ================================================================ */
+/* ============================================================
+ * § 2  文案（i18n）
+ * ============================================================ */
 
 const I18N = {
   zh: {
-    // 顶栏
+    /* —— 顶栏 —— */
     title: '智能健康分析助手',
     subtitle: '输入数据，精准评估',
     theme_light: '切换到浅色模式',
-    theme_dark: '切换到深色模式',
+    theme_dark:  '切换到深色模式',
 
-    // 表单
+    /* —— 表单 —— */
     form_title: '你的身体数据',
-    form_hint: '全部为必填',
+    form_hint:  '全部为必填',
     lbl_gender: '性别',
     lbl_female: '女性',
-    lbl_male: '男性',
+    lbl_male:   '男性',
     lbl_height: '身高',
     lbl_weight: '当前体重',
-    lbl_bodyfat: '体脂率',
+    lbl_bodyfat:'体脂率',
     lbl_muscle: '肌肉量',
-    ph_height: '165',
-    ph_weight: '60.5',
+    ph_height:  '165',
+    ph_weight:  '60.5',
     ph_bodyfat: '20.5',
-    ph_muscle: '35.5',
-    btn_calc: '开始分析',
-    btn_clear: '清除数据',
+    ph_muscle:  '35.5',
+    btn_calc:   '开始分析',
+    btn_clear:  '清除数据',
 
-    // 内联编辑器
-    btn_cancel: '取消',
-    btn_confirm: '确定',
+    /* —— 内联编辑器 —— */
+    btn_cancel:    '取消',
+    btn_confirm:   '确定',
     btn_edit_full: '完整编辑',
-    edit_hint: '轻触任一数值即可修改',
+    edit_hint:     '轻触任一数值即可修改',
 
-    // 校验错误
-    err_height: '请输入 140–190 之间的身高。',
-    err_weight: '请输入有效的体重（大于 0）。',
-    err_bodyfat: '请输入 1–75 之间的体脂率。',
-    err_muscle: '请输入有效的肌肉量（大于 0）。',
+    /* —— 校验错误 —— */
+    err_height:     '请输入 140–190 之间的身高。',
+    err_weight:     '请输入有效的体重（大于 0）。',
+    err_bodyfat:    '请输入 1–75 之间的体脂率。',
+    err_muscle:     '请输入有效的肌肉量（大于 0）。',
     err_muscle_big: '肌肉量不能大于或等于总体重。',
-    err_range: '请输入 {min} – {max} {unit} 之间的数值。',
+    err_range:      '请输入 {min} – {max} {unit} 之间的数值。',
 
-    // 空状态
+    /* —— 空状态 —— */
     empty_text: '还没有数据，先去「输入」页填写吧',
 
-    // BMI
-    bmi_label: 'BMI',
-    bmi_under: '偏瘦',
-    bmi_normal: '正常',
-    bmi_over: '偏重',
-    bmi_obese: '肥胖',
-    bmi_short_under: '偏瘦',
+    /* —— BMI —— */
+    bmi_label:        'BMI',
+    bmi_under:        '偏瘦',
+    bmi_normal:       '正常',
+    bmi_over:         '偏重',
+    bmi_obese:        '肥胖',
+    bmi_short_under:  '偏瘦',
     bmi_short_normal: '正常',
-    bmi_short_over: '偏重',
-    bmi_short_obese: '肥胖',
-    bmi_range_under: '低于 18.5',
+    bmi_short_over:   '偏重',
+    bmi_short_obese:  '肥胖',
+    bmi_range_under:  '低于 18.5',
     bmi_range_normal: '18.5 – 25',
-    bmi_range_over: '25 – 30',
-    bmi_range_obese: '高于 30',
+    bmi_range_over:   '25 – 30',
+    bmi_range_obese:  '高于 30',
 
-    // 状态
-    status_lose: '需要减重',
-    status_gain: '需要增重',
-    status_ok: '体重达标',
+    /* —— 状态 —— */
+    status_lose:     '需要减重',
+    status_gain:     '需要增重',
+    status_ok:       '体重达标',
     status_lose_sub: '超出标准体重上限',
     status_gain_sub: '低于标准体重下限',
-    status_ok_sub: '当前 {w} kg 处于标准范围内，继续保持',
+    status_ok_sub:   '当前 {w} kg 处于标准范围内，继续保持',
 
-    // 结果卡片
-    range_title: '体重位置',
-    lbl_fat_label: '体脂重量',
-    lbl_muscle_result: '肌肉率',
-    lbl_ideal_label: '标准体重区间',
-    month_label: '达标所需时间',
-    time_unit_months: '个月',
-    time_sub_weeks: '约 {weeks} 周',
-    time_ok: '已达标，保持即可',
+    /* —— 结果卡片 —— */
+    range_title:        '体重位置',
+    lbl_fat_label:      '体脂重量',
+    lbl_muscle_result:  '肌肉率',
+    lbl_ideal_label:    '标准体重区间',
+    month_label:        '达标所需时间',
+    time_unit_months:   '个月',
+    time_sub_weeks:     '约 {weeks} 周',
+    time_ok:            '已达标，保持即可',
 
-    // 标签栏
-    tab_input: '输入',
+    /* —— 标签栏 —— */
+    tab_input:   '输入',
     tab_results: '分析',
   },
 
   en: {
+    /* —— Top bar —— */
     title: 'Smart Health Analyzer',
     subtitle: 'Accurate health assessment',
     theme_light: 'Switch to light mode',
-    theme_dark: 'Switch to dark mode',
+    theme_dark:  'Switch to dark mode',
 
+    /* —— Form —— */
     form_title: 'Your Body Data',
-    form_hint: 'All fields required',
+    form_hint:  'All fields required',
     lbl_gender: 'Gender',
     lbl_female: 'Female',
-    lbl_male: 'Male',
+    lbl_male:   'Male',
     lbl_height: 'Height',
     lbl_weight: 'Weight',
-    lbl_bodyfat: 'Body Fat',
+    lbl_bodyfat:'Body Fat',
     lbl_muscle: 'Muscle',
-    ph_height: '165',
-    ph_weight: '60.5',
+    ph_height:  '165',
+    ph_weight:  '60.5',
     ph_bodyfat: '20.5',
-    ph_muscle: '35.5',
-    btn_calc: 'Analyze',
-    btn_clear: 'Clear All',
+    ph_muscle:  '35.5',
+    btn_calc:   'Analyze',
+    btn_clear:  'Clear All',
 
-    btn_cancel: 'Cancel',
-    btn_confirm: 'Confirm',
+    /* —— Inline editor —— */
+    btn_cancel:    'Cancel',
+    btn_confirm:   'Confirm',
     btn_edit_full: 'Edit All',
-    edit_hint: 'Tap any value to edit',
+    edit_hint:     'Tap any value to edit',
 
-    err_height: 'Please enter a height between 140 and 190 cm.',
-    err_weight: 'Please enter a valid weight (greater than 0).',
-    err_bodyfat: 'Please enter a body fat percentage between 1 and 75.',
-    err_muscle: 'Please enter a valid muscle mass (greater than 0).',
+    /* —— Validation —— */
+    err_height:     'Please enter a height between 140 and 190 cm.',
+    err_weight:     'Please enter a valid weight (greater than 0).',
+    err_bodyfat:    'Please enter a body fat percentage between 1 and 75.',
+    err_muscle:     'Please enter a valid muscle mass (greater than 0).',
     err_muscle_big: 'Muscle mass cannot be equal to or greater than total weight.',
-    err_range: 'Enter a value between {min} and {max} {unit}.',
+    err_range:      'Enter a value between {min} and {max} {unit}.',
 
+    /* —— Empty —— */
     empty_text: 'No data yet — fill in the "Input" tab first',
 
-    bmi_label: 'BMI',
-    bmi_under: 'Underweight',
-    bmi_normal: 'Normal',
-    bmi_over: 'Overweight',
-    bmi_obese: 'Obese',
-    bmi_short_under: 'Under',
+    /* —— BMI —— */
+    bmi_label:        'BMI',
+    bmi_under:        'Underweight',
+    bmi_normal:       'Normal',
+    bmi_over:         'Overweight',
+    bmi_obese:        'Obese',
+    bmi_short_under:  'Under',
     bmi_short_normal: 'Normal',
-    bmi_short_over: 'Over',
-    bmi_short_obese: 'Obese',
-    bmi_range_under: 'Below 18.5',
+    bmi_short_over:   'Over',
+    bmi_short_obese:  'Obese',
+    bmi_range_under:  'Below 18.5',
     bmi_range_normal: '18.5 – 25',
-    bmi_range_over: '25 – 30',
-    bmi_range_obese: 'Above 30',
+    bmi_range_over:   '25 – 30',
+    bmi_range_obese:  'Above 30',
 
-    status_lose: 'Weight Loss Needed',
-    status_gain: 'Weight Gain Needed',
-    status_ok: 'Within Healthy Range',
+    /* —— Status —— */
+    status_lose:     'Weight Loss Needed',
+    status_gain:     'Weight Gain Needed',
+    status_ok:       'Within Healthy Range',
     status_lose_sub: 'Above the healthy upper limit',
     status_gain_sub: 'Below the healthy lower limit',
-    status_ok_sub: 'Currently {w} kg — nicely within the healthy range',
+    status_ok_sub:   'Currently {w} kg — nicely within the healthy range',
 
-    range_title: 'Weight Position',
-    lbl_fat_label: 'Fat Mass',
-    lbl_muscle_result: 'Muscle Ratio',
-    lbl_ideal_label: 'Ideal Weight Range',
-    month_label: 'Time to Goal',
-    time_unit_months: 'months',
-    time_sub_weeks: '≈ {weeks} weeks',
-    time_ok: 'On target — keep it up',
+    /* —— Result cards —— */
+    range_title:        'Weight Position',
+    lbl_fat_label:      'Fat Mass',
+    lbl_muscle_result:  'Muscle Ratio',
+    lbl_ideal_label:    'Ideal Weight Range',
+    month_label:        'Time to Goal',
+    time_unit_months:   'months',
+    time_sub_weeks:     '≈ {weeks} weeks',
+    time_ok:            'On target — keep it up',
 
-    tab_input: 'Input',
+    /* —— Tabs —— */
+    tab_input:   'Input',
     tab_results: 'Results',
   },
 };
 
 
-/* ================================================================
- * 3. DOM 引用
- * ================================================================ */
+/* ============================================================
+ * § 3  DOM 引用
+ * ============================================================ */
 
 const $  = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
 const dom = {
-  // 顶栏
+  /* —— 顶栏 —— */
   bar:   $('#bar'),
   theme: $('#theme'),
   lang:  $('#lang'),
 
-  // 主体
-  body:  $('#body'),
+  /* —— 主体 —— */
+  body: $('#body'),
 
-  // 表单
+  /* —— 表单 —— */
   form:    $('#form'),
   err:     $('#err'),
   clear:   $('#clear'),
@@ -1640,19 +1668,19 @@ const dom = {
   bodyfat: $('#bodyfat'),
   muscle:  $('#muscle'),
 
-  // 结果
+  /* —— 结果容器 —— */
   empty: $('#empty'),
   stack: $('#rstk'),
   sbar:  $('#sbar'),
 
-  // BMI 卡片
-  bh:   $('#bh'),
-  bhn:  $('#bhn'),
-  bhc:  $('#bhc'),
-  bhr:  $('#bhr'),
-  bsm:  $('#bsm'),
+  /* —— BMI 卡片 —— */
+  bh:  $('#bh'),
+  bhn: $('#bhn'),
+  bhc: $('#bhc'),
+  bhr: $('#bhr'),
+  bsm: $('#bsm'),
 
-  // 状态条
+  /* —— 状态条 —— */
   sts:   $('#sts'),
   stt:   $('#stt'),
   stsub: $('#stsub'),
@@ -1660,14 +1688,14 @@ const dom = {
   stdn:  $('#stdn'),
   stdu:  $('#stdu'),
 
-  // 滑轨
+  /* —— 滑轨 —— */
   cw:   $('#cw'),
   rb:   $('#rb'),
   rm:   $('#rm'),
   smin: $('#smin'),
   smax: $('#smax'),
 
-  // 指标
+  /* —— 指标网格 —— */
   cf: $('#cf'),
   cm: $('#cm'),
   ci: $('#ci'),
@@ -1679,7 +1707,7 @@ const dom = {
   tu: $('#tu'),
   ts: $('#ts'),
 
-  // 标签栏
+  /* —— 标签栏 —— */
   tabResults: $('#tabr'),
   badge:      $('#bdg'),
 };
@@ -1693,14 +1721,14 @@ const fieldInputs = {
 };
 
 
-/* ================================================================
- * 4. 应用状态
- * ================================================================ */
+/* ============================================================
+ * § 4  应用状态
+ * ============================================================ */
 
 const state = {
-  lang: 'zh',
+  lang:  'zh',
   theme: document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light',
-  view: 'input',
+  view:  'input',
   /** 最近一次提交的原始数据 */
   values: null,
   /** 最近一次分析结果 */
@@ -1710,16 +1738,16 @@ const state = {
 /** 各视图的滚动位置记忆 */
 const scrollMemory = { input: 0, results: 0 };
 
-// 恢复语言偏好
+/* 恢复语言偏好 */
 try {
   const savedLang = localStorage.getItem('sha-lang');
   if (savedLang === 'zh' || savedLang === 'en') state.lang = savedLang;
 } catch {}
 
 
-/* ================================================================
- * 5. 工具函数
- * ================================================================ */
+/* ============================================================
+ * § 5  工具函数
+ * ============================================================ */
 
 /** 保留一位小数 */
 const fmt1 = n => n.toFixed(1);
@@ -1744,9 +1772,9 @@ const shake = el => el.animate(
 );
 
 
-/* ================================================================
- * 6. 业务计算
- * ================================================================ */
+/* ============================================================
+ * § 6  业务计算
+ * ============================================================ */
 
 /**
  * 根据身高和性别计算标准体重区间（kg）
@@ -1801,9 +1829,9 @@ function analyze({ gender, height, weight, bodyfat, muscle }) {
 }
 
 
-/* ================================================================
- * 7. 表单校验
- * ================================================================ */
+/* ============================================================
+ * § 7  表单校验
+ * ============================================================ */
 
 /** 把 state.values 回填到表单控件 */
 function syncForm() {
@@ -1864,7 +1892,7 @@ function readForm() {
     }
   }
 
-  // 交叉校验：肌肉量必须小于总体重
+  /* 交叉校验：肌肉量必须小于总体重 */
   if (values.muscle >= values.weight) {
     showError('err_muscle_big', dom.muscle);
     return null;
@@ -1875,9 +1903,9 @@ function readForm() {
 }
 
 
-/* ================================================================
- * 8. 结果渲染
- * ================================================================ */
+/* ============================================================
+ * § 8  结果渲染
+ * ============================================================ */
 
 /** 渲染整块结果区 */
 function render() {
@@ -1886,7 +1914,7 @@ function render() {
 
   const t = I18N[state.lang];
 
-  /* --- BMI 卡片 --- */
+  /* —— R-1  BMI 卡片 —— */
   dom.bh.dataset.cat = r.bmiCat;
   dom.bhn.textContent = fmt1(r.bmi);
   dom.bhc.textContent = t[`bmi_${r.bmiCat}`];
@@ -1897,7 +1925,7 @@ function render() {
     (r.bmi - scaleMin) / (scaleMax - scaleMin) * 100));
   dom.bsm.style.left = `${bmiPercent}%`;
 
-  /* --- 状态条 --- */
+  /* —— R-2  状态条 —— */
   dom.sts.dataset.s = r.mode;
   dom.stt.textContent = t[`status_${r.mode}`];
   dom.stsub.textContent = fill(t[`status_${r.mode}_sub`], {
@@ -1905,7 +1933,7 @@ function render() {
     d: fmt1(r.diff),
   });
 
-  // 大号数字：只有需要增减时才显示
+  /* 大号数字：只有需要增减时才显示 */
   if (r.mode === 'ok') {
     dom.std.hidden = true;
   } else {
@@ -1914,7 +1942,7 @@ function render() {
     dom.stdu.textContent = 'kg';
   }
 
-  /* --- 体重位置滑轨 --- */
+  /* —— R-3  体重位置滑轨 —— */
   const span = Math.max(r.idealMax - r.idealMin, 4);
   const pad = span * 1.2;
   const railMin = Math.max(0, r.idealMin - pad);
@@ -1930,7 +1958,7 @@ function render() {
   dom.smin.textContent = `${Math.round(railMin)} kg`;
   dom.smax.textContent = `${Math.round(railMax)} kg`;
 
-  /* --- 指标网格 --- */
+  /* —— R-4  指标网格 —— */
   dom.fm.textContent = fmt1(r.fatMass);
   dom.mr.textContent = fmt1(r.muscleRatio);
   dom.ir.textContent = `${fmt1(r.idealMin)} – ${fmt1(r.idealMax)}`;
@@ -1969,9 +1997,9 @@ function pulseCard(field) {
 }
 
 
-/* ================================================================
- * 9. 数据胶囊条 & 内联编辑
- * ================================================================ */
+/* ============================================================
+ * § 9  数据胶囊条 & 内联编辑
+ * ============================================================ */
 
 /** 生成胶囊的只读内容 HTML */
 function chipContentHTML(field) {
@@ -2022,7 +2050,7 @@ function buildChipBar() {
   const t = I18N[state.lang];
   const frag = document.createDocumentFragment();
 
-  // 提示行
+  /* 提示行 */
   const hint = document.createElement('p');
   hint.className = 'shint';
   hint.innerHTML = `
@@ -2032,7 +2060,7 @@ function buildChipBar() {
     <span>${t.edit_hint}</span>`;
   frag.append(hint);
 
-  // 五个数据胶囊
+  /* 五个数据胶囊 */
   for (const field of ['gender', ...FIELD_ORDER]) {
     const chip = document.createElement('span');
     chip.className = 'chip';
@@ -2041,7 +2069,7 @@ function buildChipBar() {
     frag.append(chip);
   }
 
-  // 「完整编辑」按钮
+  /* 「完整编辑」按钮 */
   const editAll = document.createElement('span');
   editAll.className = 'chip act';
   editAll.dataset.a = 'edit';
@@ -2111,7 +2139,7 @@ function openEditor(chip, field) {
 
   let settled = false;
 
-  /** 校验当前输入值，失败时显示错误 */
+  /* —— 校验当前输入值 —— */
   const validate = () => {
     const num = parseFloat(input.value);
 
@@ -2140,7 +2168,7 @@ function openEditor(chip, field) {
     return num;
   };
 
-  /** 确认修改 */
+  /* —— 确认修改 —— */
   const commit = () => {
     if (settled) return false;
     const num = validate();
@@ -2158,7 +2186,7 @@ function openEditor(chip, field) {
     return true;
   };
 
-  /** 取消修改 */
+  /* —— 取消修改 —— */
   const cancel = () => {
     if (settled) return;
     settled = true;
@@ -2166,11 +2194,11 @@ function openEditor(chip, field) {
     haptic(6);
   };
 
-  // 按钮事件
+  /* 确认 / 取消 */
   chip.querySelector('[data-a=confirm]').addEventListener('click', commit);
   chip.querySelector('[data-a=cancel]').addEventListener('click', cancel);
 
-  // 加减按钮
+  /* 加减按钮 */
   chip.querySelectorAll('.eds').forEach(btn => {
     btn.addEventListener('click', () => {
       const delta = Number(btn.dataset.s);
@@ -2189,13 +2217,13 @@ function openEditor(chip, field) {
     });
   });
 
-  // 输入时清除错误
+  /* 输入时清除错误 */
   input.addEventListener('input', () => {
     input.classList.remove('bad');
     errEl.hidden = true;
   });
 
-  // 键盘：Enter 确认 / Esc 取消
+  /* 键盘：Enter 确认 / Esc 取消 */
   input.addEventListener('keydown', e => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -2206,7 +2234,7 @@ function openEditor(chip, field) {
     }
   });
 
-  // 点击外部取消
+  /* 点击外部取消 */
   const onOutside = e => {
     if (!chip.contains(e.target)) {
       cancel();
@@ -2220,7 +2248,7 @@ function openEditor(chip, field) {
 function activateChip(chip) {
   if (!chip) return;
 
-  // 「完整编辑」→ 跳到输入页
+  /* 「完整编辑」→ 跳到输入页 */
   if (chip.dataset.a === 'edit') {
     haptic();
     goToView('input', true);
@@ -2230,7 +2258,7 @@ function activateChip(chip) {
   const field = chip.dataset.f;
   if (!field) return;
 
-  // 性别：点击即切换
+  /* 性别：点击即切换 */
   if (field === 'gender') {
     haptic();
     state.values = {
@@ -2249,9 +2277,9 @@ function activateChip(chip) {
 }
 
 
-/* ================================================================
- * 10. 视图 / 主题 / 语言
- * ================================================================ */
+/* ============================================================
+ * § 10  视图 / 主题 / 语言
+ * ============================================================ */
 
 /** 切换视图，并恢复该视图上次的滚动位置 */
 function goToView(view, smooth = false) {
@@ -2270,7 +2298,7 @@ function goToView(view, smooth = false) {
     tab.setAttribute('aria-selected', String(active));
   }
 
-  // 「分析」页有新结果时显示红点
+  /* 「分析」页有新结果时显示红点 */
   dom.badge.hidden = !(state.result && view !== 'results');
 
   dom.body.scrollTo({
@@ -2329,11 +2357,11 @@ function setTheme(theme) {
 }
 
 
-/* ================================================================
- * 11. 事件绑定
- * ================================================================ */
+/* ============================================================
+ * § 11  事件绑定
+ * ============================================================ */
 
-/* --- 提交表单 → 分析 --- */
+/* —— 提交表单 → 分析 —— */
 dom.form.addEventListener('submit', e => {
   e.preventDefault();
   const values = readForm();
@@ -2349,7 +2377,7 @@ dom.form.addEventListener('submit', e => {
   haptic(12);
 });
 
-/* --- 清除全部数据 --- */
+/* —— 清除全部数据 —— */
 function clearAll() {
   document.activeElement?.blur?.();
 
@@ -2371,7 +2399,7 @@ function clearAll() {
 }
 dom.clear.addEventListener('click', clearAll);
 
-/* --- 胶囊条：点击 / 键盘 --- */
+/* —— 胶囊条：点击 / 键盘 —— */
 dom.sbar.addEventListener('click', e => {
   if (e.target.closest('.ed')) return;
   const chip = e.target.closest('.chip');
@@ -2386,7 +2414,7 @@ dom.sbar.addEventListener('keydown', e => {
   activateChip(chip);
 });
 
-/* --- 顶栏按钮 --- */
+/* —— 顶栏按钮 —— */
 dom.lang.addEventListener('click', () => {
   haptic();
   setLang(state.lang === 'zh' ? 'en' : 'zh');
@@ -2397,7 +2425,7 @@ dom.theme.addEventListener('click', () => {
   setTheme(state.theme === 'dark' ? 'light' : 'dark');
 });
 
-/* --- 标签栏切换 --- */
+/* —— 标签栏切换 —— */
 for (const tab of $$('.tab')) {
   tab.addEventListener('click', () => {
     haptic();
@@ -2405,7 +2433,7 @@ for (const tab of $$('.tab')) {
   });
 }
 
-/* --- 输入时即时清除错误 --- */
+/* —— 输入时即时清除错误 —— */
 for (const key of FIELD_ORDER) {
   const input = fieldInputs[key];
   input.addEventListener('input', () => {
@@ -2415,20 +2443,21 @@ for (const key of FIELD_ORDER) {
   });
 }
 
-/* --- 滚动时给顶栏加投影 --- */
+/* —— 滚动时给顶栏加投影 —— */
 dom.body.addEventListener('scroll', () => {
   dom.bar.classList.toggle('sc', dom.body.scrollTop > 4);
 }, { passive: true });
 
 
-/* ================================================================
- * 12. 初始化
- * ================================================================ */
+/* ============================================================
+ * § 12  初始化
+ * ============================================================ */
 
 syncThemeMeta();
 applyI18n();
 updateVisibility();
 goToView('input');
+
 </script>
 </body>
 </html>
